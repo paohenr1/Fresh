@@ -1,6 +1,6 @@
 import { useId, useMemo, useState, type ReactNode } from 'react';
 import { ArrowDown, ArrowUpRight, Check, ChevronDown, Download, Leaf, LockKeyhole, RotateCcw, ShieldCheck, SlidersHorizontal, TrendingUp, Users, Wallet, CircleAlert } from 'lucide-react';
-import { ACCOUNTS, DISCLAIMER, GOVERNMENT, currency, currentAge, defaultScenario, project, scenarioFacts, validate, type AccountType, type Person, type Scenario } from './model';
+import { ACCOUNTS, DISCLAIMER, GOVERNMENT, currency, currentAge, defaultScenario, project, scenarioFacts, validate, yearOf, type AccountType, type Person, type Scenario } from './model';
 import { Chart, Table } from './Charts';
 
 function Field({ label, value, onChange, type = 'number', prefix, suffix, error, ariaLabel, min, max, step = 'any' }: {
@@ -146,7 +146,7 @@ export default function App() {
               <dl className="facts-grid">{scenarioFacts(scenario, projection).map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
             </section>
             <section className="results-card charts-card"><div className="section-heading"><div><span className="section-kicker">See the bigger picture</span><h2>How your plan unfolds</h2></div><span className="subtle-chip">Annual projection</span></div>
-              <Chart projection={projection} kind="balance" /><div className="chart-divider" /><Chart projection={projection} kind="income" />
+              <Chart projection={projection} kind="balance" /><div className="chart-divider" /><Chart projection={projection} kind="income" planEnds={[{ year: yearOf(scenario.client.planEnd), person: 'Client' }, ...(scenario.hasSpouse ? [{ year: yearOf(scenario.spouse.planEnd), person: 'Spouse' }] : [])]} />
             </section>
             <div className="method-note"><span className="method-icon"><Leaf size={20} /></span><div><h3>A picture of possibilities, not a promise.</h3><p>These are nominal, pre-tax estimates using constant returns. A zero savings balance isn’t a shortfall if income still covers your target.</p></div></div>
           </>}

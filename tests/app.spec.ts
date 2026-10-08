@@ -45,6 +45,10 @@ test('exports a complete PDF twice, reflecting the updated scenario', async ({ p
   expect(firstBytes.toString('latin1')).toContain('/Subtype /Image');
   expect(firstBytes.toString('latin1')).toContain('Your year-by-year projection');
   expect(firstBytes.toString('latin1')).toContain('2076');
+  expect(firstBytes.toString('latin1')).toContain('Client pension');
+  expect(firstBytes.toString('latin1')).toContain('Client CPP');
+  expect(firstBytes.toString('latin1')).toContain('Client OAS');
+  expect(firstBytes.toString('latin1')).toContain('continued');
   await page.getByRole('spinbutton', { name: 'Client Current income', exact: true }).fill('900000');
   const nextDownload = page.waitForEvent('download');
   await page.getByRole('button', { name: 'Export client PDF' }).click();
@@ -54,6 +58,29 @@ test('exports a complete PDF twice, reflecting the updated scenario', async ({ p
   expect(nextBytes.equals(firstBytes)).toBe(false);
   expect(nextBytes.toString('latin1')).toContain('SHORTFALL IN THIS SCENARIO');
   expect(nextBytes.toString('latin1')).toContain('900,000');
+});
+
+test('exports both people’s benefit settings and explains the survivor transition', async ({ page }, testInfo) => {
+  await page.goto('/');
+  await page.getByRole('switch', { name: 'Include spouse' }).click();
+  await page.getByRole('textbox', { name: 'Client Plan end date', exact: true }).fill('2056-12-31');
+  await page.getByRole('tab', { name: 'Spouse', exact: true }).click();
+  await page.getByRole('button', { name: /Pension & benefits/ }).click();
+  await page.getByRole('spinbutton', { name: 'Spouse Annual pension payable at retirement', exact: true }).fill('24000');
+  await page.getByRole('spinbutton', { name: 'Spouse % of maximum CPP', exact: true }).fill('75');
+  await page.getByRole('spinbutton', { name: 'Spouse CPP start age', exact: true }).fill('67');
+  await expect(page.locator('svg[data-chart="income"]')).toContainText('Client plan ends');
+  const pending = page.waitForEvent('download');
+  await page.getByRole('button', { name: 'Export client PDF' }).click();
+  const download = await pending;
+  const path = testInfo.outputPath('couple.pdf'); await download.saveAs(path);
+  const content = (await fs.readFile(path)).toString('latin1');
+  expect(content).toContain('Spouse pension');
+  expect(content).toContain('24,000');
+  expect(content).toContain('75% of maximum');
+  expect(content).toContain('starts at age 67');
+  expect(content).toContain('Spouse OAS');
+  expect(content).toContain('2079');
 });
 
 test('stays within a mobile viewport and makes no external requests', async ({ page }) => {

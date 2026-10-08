@@ -204,10 +204,16 @@ An **Export client PDF** button generates the PDF entirely in the browser and
 downloads `fresh-client-retirement-projection.pdf`.
 
 - Page 1: title, prepared date, verdict, four metrics, scenario facts, disclaimer.
+  Include each person's pension amount, CPP percentage and start age, OAS
+  percentage and deferral, and the government reference amounts and year.
 - Page 2: both charts and a short "How to read this" explanation, including the
-  employment-income chart omission.
+  employment-income chart omission. Use coloured legends and a dashed target
+  key. Put the working-income explanation beside the income chart and label
+  the target transition after a person's plan ends.
 - Page 3 onward: complete year-by-year table. Continue across additional pages
-  as needed, with readable text and repeated column headings.
+  as needed, with readable text, white headings on green, and repeated report
+  titles and column headings. Mark retirement years with an asterisk and shade
+  retirement and shortage rows distinctly.
 
 On every export click, re-collect the current inputs and re-run the projection.
 Never reuse a cached PDF or an earlier scenario.

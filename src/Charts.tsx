@@ -7,14 +7,14 @@ export const BALANCE_SERIES: Series[] = [
   { label: 'RRSP', color: '#639d83', value: r => r.balances.RRSP },
   { label: 'TFSA', color: '#194c3e', value: r => r.balances.TFSA },
 ];
-const INCOME_SERIES: Series[] = [
+export const INCOME_SERIES: Series[] = [
   { label: 'CPP', color: '#194c3e', value: r => r.cpp },
   { label: 'OAS', color: '#639d83', value: r => r.oas },
   { label: 'Pension', color: '#c5ae7b', value: r => r.pension },
   { label: 'Investments', color: '#bbd4b1', value: r => r.draw },
 ];
 
-export function Chart({ projection: p, kind }: { projection: Projection; kind: 'balance' | 'income' }) {
+export function Chart({ projection: p, kind, planEnds = [] }: { projection: Projection; kind: 'balance' | 'income'; planEnds?: { year: number; person: string }[] }) {
   const rows = kind === 'balance' ? p.rows : p.rows.filter(r => r.retired);
   const series = kind === 'balance' ? BALANCE_SERIES : INCOME_SERIES;
   const [hover, setHover] = useState<number | null>(null);
@@ -53,6 +53,13 @@ export function Chart({ projection: p, kind }: { projection: Projection; kind: '
         </g>)}
         {paths.map(s => <polygon key={s.label} points={s.points} fill={s.color} opacity="0.96" />)}
         {kind === 'income' && <polyline points={rows.map((r, i) => `${x(i)},${y(r.need)}`).join(' ')} stroke="#a86b48" strokeWidth="2.5" strokeDasharray="6 4" fill="none" />}
+        {kind === 'income' && planEnds.map(({ year, person }) => {
+          const i = rows.findIndex(r => r.year === year + 1);
+          return i < 0 ? null : <g key={person}>
+            <line x1={x(i)} x2={x(i)} y1={top} y2={height - bottom} stroke="#7a8b7e" strokeDasharray="4 4" />
+            <text x={Math.min(width - right, Math.max(left, x(i)))} y={top - 8} textAnchor={x(i) > width / 2 ? 'end' : 'start'} fill="#677c70" fontSize="12" fontFamily="Arial, sans-serif">{person} plan ends · {year}</text>
+          </g>;
+        })}
         {kind === 'balance' && [...new Set(p.retirementYears)].map((year, index) => {
           const i = rows.findIndex(r => r.year === year);
           return i < 0 ? null : <g key={year}>
@@ -61,7 +68,7 @@ export function Chart({ projection: p, kind }: { projection: Projection; kind: '
           </g>;
         })}
         {tickIndices.map(i => <text key={i} x={x(i)} y={height - 11} textAnchor="middle" fill="#75877d" fontSize="11" fontFamily="Arial, sans-serif">{rows[i]?.year}</text>)}
-        {selected && hover !== null && <line x1={x(hover)} x2={x(hover)} y1={top} y2={height - bottom} stroke="#153f35" opacity="0.6" />}
+        {selected && hover !== null && <line data-hover="true" x1={x(hover)} x2={x(hover)} y1={top} y2={height - bottom} stroke="#153f35" opacity="0.6" />}
       </svg>
       {selected && <div className="chart-tooltip"><strong>{selected.year}</strong>{series.map(s => <span key={s.label}>{s.label}<b>{currency(s.value(selected))}</b></span>)}{kind === 'income' && <span>Target<b>{currency(selected.need)}</b></span>}</div>}
     </div>
