@@ -78,7 +78,7 @@ export function validate(s: Scenario, now = new Date()): ValidationErrors {
   ([['client', s.client], ...(s.hasSpouse ? [['spouse', s.spouse]] : [])] as [string, Person][]).forEach(([key, p]) => {
     if (!validDate(p.dob) || p.dob > today) errors[`${key}.dob`] = 'Enter a valid date of birth, no later than today.';
     if (!validDate(p.planEnd)) errors[`${key}.planEnd`] = 'Enter a valid plan end date.';
-    check(`${key}.retirementAge`, p.retirementAge, 0, 120);
+    check(`${key}.retirementAge`, p.retirementAge, 1, 120);
     if (!Number.isInteger(p.retirementAge)) errors[`${key}.retirementAge`] = 'Use a whole age.';
     if (validDate(p.planEnd) && validDate(p.dob)) {
       if (yearOf(p.planEnd) < now.getFullYear()) errors[`${key}.planEnd`] = 'Plan end must be in the current year or later.';
