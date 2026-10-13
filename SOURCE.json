@@ -1,0 +1,13 @@
+{
+  "repository": "https://github.com/paohenr1/Fresh",
+  "commit": "a0623571bd85c0c75c284efe4ba4dee550db8d9b",
+  "sha256": {
+    "src/model.ts": "835cee3107533eac8ec9b133cab435d604d7eedd855f0d6ca17ee7b220a2f9ae",
+    "src/model.test.ts": "a98f23531988cbd2b6269bd2498e0501c3901d6d7c5dbbfc2bbf2ccdf423f7bf",
+    "src/App.tsx": "68adeb8ba4739af9622f082b534ecf93d56009e9cdd4065041d28d346e3013dc",
+    "src/Charts.tsx": "eac7af5d9e855ba35b20d3a2cafda3311d8a5084ced87f2c5009b8aa80b66131",
+    "src/pdf.ts": "b7f67cc9a05631f90b96e1cb7176f21104c5f9a696e6a99ed942b3a2aa7b0989",
+    "docs/specification.md": "f24320441b91e755c496b4ecf028d5b2e94f5f4ac0c67cc9285a7657f76285e8",
+    "README.md": "6771cadc265fbb98acad9ce9ca2c2f26714d63672cdb14af0d58826e05f68ce8"
+  }
+}

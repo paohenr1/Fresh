@@ -1,0 +1,99 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>FRESH · Retirement planner</title><style>
+$css
+.date-edit{margin-top:5px;color:#78877b;font-size:10px}.date-edit summary{cursor:pointer;text-align:right}.date-edit[open]{border:1px solid #e3e9df;border-radius:6px;padding:9px}.date-edit .field{margin-top:10px;margin-bottom:0}
+.metrics-grid{grid-template-columns:repeat(5,minmax(150px,1fr));gap:0;border:1px solid #d4dce5;background:white;overflow-x:auto;margin-bottom:10px}.metric{border:0;border-left:1px solid #d4dce5;border-radius:0;padding:20px 8px;text-align:center}.metric:first-child{border-left:0}.metric-top{justify-content:center}.metric-top>span{color:#00365d;font-size:11px;min-height:32px}.metric-value{color:#00365d;font-size:clamp(18px,1.6vw,24px);font-weight:700;letter-spacing:0}.summary-note{font-size:10px;line-height:1.7;color:#78877b;margin:0 0 20px}.hero-actions{max-width:520px}.action-row{flex-wrap:wrap;justify-content:flex-end}.hero-actions .button{white-space:nowrap}@media(max-width:900px){.action-row{justify-content:flex-start}}
+/* Report-only adaptations. The original layout and responsive rules are above. */
+[hidden]{display:none!important}.indexation-value{font-size:9px;color:#76846d;background:#f6f9f1;border:1px solid #e8edde;padding:5px 6px;border-radius:4px}.input-wrap{margin-top:7px}.input-wrap input[readonly]{cursor:text}.card-toggle[aria-expanded=true]>svg{transform:rotate(180deg)}.basis-picker{padding:16px 25px;display:flex;align-items:center;gap:14px;font-size:11px;color:#78877b}.basis-picker select{border:1px solid #dfe6d8;border-radius:6px;background:white;color:#53684d;padding:8px}.chart-canvas svg:focus-visible{outline:2px solid #8aaa71;outline-offset:3px}
+</style></head><body>
+<header class="site-header"><div class="header-inner"><a class="wordmark" href="#" aria-label="Fresh home"><span class="brand-icon">$leaf</span>fresh<span class="wordmark-dot">.</span></a><div class="header-divider"></div><span class="header-name">Retirement planner</span><span class="privacy-badge">$lock Private by design</span></div></header>
+<main class="page-shell">
+  <section class="hero"><div><p class="eyebrow"><span></span>A clearer tomorrow starts here</p><h1>Your future, <em>in perspective.</em></h1><p class="hero-copy">Turn today’s savings into a picture of tomorrow.<br class="desktop-break"> Explore your retirement, one simple scenario at a time.</p></div>
+    <div class="hero-actions"><span class="live-note"><span></span>Saved scenario · starts $base_year</span><div class="action-row"><button class="button button-primary pdf-export" data-pdf="client" disabled>$download Export client PDF</button><button class="button button-primary pdf-export" data-pdf="advisor" disabled>$download Export advisor PDF</button></div><span class="actions-note">Client overview or advisor record with every input and full annual tables. PDF export is available in the editable planner.</span></div>
+  </section>
+  <div class="planner-layout">
+    <aside class="inputs-column" aria-label="Saved scenario inputs"><div class="column-heading">$sliders<h2>Your scenario</h2><span>Saved inputs</span></div>$sidebar</aside>
+    <section class="results-column" aria-label="Projection results">
+      <div class="column-heading"><span class="result-indicator"></span><h2>Your retirement picture</h2><span>Pre-tax illustration</span></div>
+      <div class="verdict $verdict_class"><div class="verdict-icon">$verdict_icon</div><div><p class="eyebrow">$verdict_label</p><h2>$verdict_heading</h2><p>$verdict_detail</p></div><span class="verdict-tag">Your scenario</span></div>
+      <div class="metrics-grid">$metrics</div><p class="summary-note">Current savings includes starting Cash, RRSP and TFSA balances. The annual income target is the initial retirement-year amount; subsequent targets follow general inflation.</p>
+      <section class="results-card glance-card"><div class="section-heading"><div><span class="section-kicker">The essentials</span><h2>Scenario at a glance</h2></div><span class="subtle-chip">$household</span></div><dl class="facts-grid">$facts</dl></section>
+      <section class="results-card charts-card"><div class="section-heading"><div><span class="section-kicker">See the bigger picture</span><h2>How your plan unfolds</h2></div><span class="subtle-chip">Annual projection</span></div>$balance_chart<div class="chart-divider"></div>$income_chart</section>
+      <div class="method-note"><span class="method-icon">$leaf</span><div><h3>A picture of possibilities, not a promise.</h3><p>These are nominal, pre-tax estimates using constant returns. A zero savings balance isn’t a shortfall if income still covers your target.</p></div></div>
+    </section>
+  </div>
+  <section class="results-card annual-section"><button class="annual-toggle" aria-expanded="false" aria-controls="annual-table"><div><span class="section-kicker">Every year, accounted for</span><h2>Your year-by-year projection</h2><p>Explore the numbers behind the picture. All balances are after annual growth.</p></div><span class="table-toggle-label"><span class="toggle-text">View all years</span>$chevron</span></button>
+    <div id="annual-table" hidden><div class="basis-picker"><label for="dollar-basis">Show values in</label><select id="dollar-basis"><option value="nominal">Nominal CAD</option><option value="real">Today’s CAD ($base_year purchasing power)</option></select></div><div data-basis="nominal">$nominal_table</div><div data-basis="real" hidden>$real_table</div><p class="table-note"><span class="row-marker"></span> Retirement year <span class="shortage-key"></span> Unfunded shortage · Income-target years begin at the first retirement. Ages are blank after a person’s plan ends.<br>Displayed amounts are rounded to whole dollars, as in the original FRESH. CSV and JSON retain full precision and complete account reconciliation. Today’s dollars use general inflation from $base_year.</p></div>
+  </section>
+  <section class="disclaimer-section"><div class="disclaimer-heading">$shield<h2>A few things to keep in mind</h2></div><p>Values are estimates, not guarantees. This is a gross, pre-tax illustration. Income taxes, OAS clawback, GIS, RRIF minimums, LIF maximums, pension splitting, fees, survivor pensions and CPP survivor benefits are excluded.</p><p>The current year counts as a full year. Each person retires at the start of their selected retirement year. Working income counts during partial retirement; only entered contributions add to savings. The survivor’s target uses their own original current income, adjusted for inflation.</p></section>
+  <footer class="site-footer"><a href="#" class="footer-brand">fresh.</a><span>A clearer view. A more considered future.</span><span>Made for exploring, not predicting.</span></footer>
+</main>
+<script>
+// These controls only explore saved results; Python remains the calculation engine.
+document.addEventListener('click', event => {
+  const button = event.target.closest('.card-toggle, .annual-toggle');
+  if (button) {
+    const expanded = button.getAttribute('aria-expanded') !== 'true';
+    button.setAttribute('aria-expanded', String(expanded));
+    document.getElementById(button.getAttribute('aria-controls')).hidden = !expanded;
+    button.closest('section').classList.toggle('is-open', expanded);
+    const text = button.querySelector('.toggle-text');
+    if (text) text.textContent = expanded ? 'Hide details' : 'View all years';
+  }
+});
+document.querySelectorAll('[data-person-tab]').forEach(button => {
+  button.addEventListener('click', () => {
+    const person = button.dataset.personTab;
+    document.querySelectorAll('[data-person-tab]').forEach(tab => {
+      tab.setAttribute('aria-selected', String(tab === button));
+      tab.setAttribute('aria-pressed', String(tab === button));
+    });
+    document.querySelectorAll('[data-person]').forEach(panel => { panel.hidden = panel.dataset.person !== person; });
+  });
+});
+document.addEventListener('change', event => {
+  if (event.target.id !== 'dollar-basis') return;
+  document.querySelectorAll('[data-basis]').forEach(panel => { panel.hidden = panel.dataset.basis !== event.target.value; });
+});
+function initCharts() {
+document.querySelectorAll('.chart-canvas').forEach(canvas => {
+  const rows = JSON.parse(canvas.dataset.rows);
+  const svg = canvas.querySelector('svg');
+  const tooltip = canvas.querySelector('.chart-tooltip');
+  const line = svg.querySelector('.hover-line');
+  let selected = 0;
+  function show(index) {
+    selected = Math.max(0, Math.min(rows.length - 1, index));
+    const row = rows[selected];
+    const x = 62 + selected / Math.max(1, rows.length - 1) * 640;
+    line.setAttribute('x1', x); line.setAttribute('x2', x); line.setAttribute('visibility', 'visible');
+    tooltip.replaceChildren();
+    const title = document.createElement('strong'); title.textContent = row.year; tooltip.append(title);
+    row.values.forEach(([label, amount]) => {
+      const span = document.createElement('span'); span.textContent = label;
+      const value = document.createElement('b'); value.textContent = amount;
+      span.append(value); tooltip.append(span);
+    });
+    tooltip.hidden = false;
+  }
+  function hide() { tooltip.hidden = true; line.setAttribute('visibility', 'hidden'); }
+  svg.addEventListener('pointermove', event => {
+    const point = svg.createSVGPoint(); point.x = event.clientX; point.y = event.clientY;
+    const coordinate = point.matrixTransform(svg.getScreenCTM().inverse());
+    show(Math.round((coordinate.x - 62) / 640 * (rows.length - 1)));
+  });
+  canvas.addEventListener('pointerleave', hide);
+  svg.addEventListener('focus', () => show(selected));
+  svg.addEventListener('blur', hide);
+  svg.addEventListener('keydown', event => {
+    if (event.key === 'ArrowRight' || event.key === 'ArrowLeft') {
+      event.preventDefault(); show(selected + (event.key === 'ArrowRight' ? 1 : -1));
+    } else if (event.key === 'Escape') hide();
+  });
+});
+}
+initCharts();
+</script>
+$live_script
+</body></html>

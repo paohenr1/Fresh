@@ -1,0 +1,27 @@
+{
+  "as_of": "2026-10-08",
+  "client": {
+    "dob": "1961-06-15", "retirement_age": 65, "plan_end": "2030-12-31",
+    "income": 60000, "pension": 18000,
+    "cpp_percent": 100, "cpp_age": 65, "oas_percent": 100, "oas_deferral": 0,
+    "accounts": {
+      "Cash": {"balance": 25000, "contribution": 2000, "indexation_percent": 0},
+      "RRSP": {"balance": 220000, "contribution": 12000, "indexation_percent": 2.5},
+      "TFSA": {"balance": 90000, "contribution": 6000, "indexation_percent": 1}
+    }
+  },
+  "spouse": {
+    "dob": "1964-06-15", "retirement_age": 65, "plan_end": "2033-12-31",
+    "income": 50000, "pension": 15000,
+    "cpp_percent": 80, "cpp_age": 65, "oas_percent": 100, "oas_deferral": 0,
+    "accounts": {
+      "Cash": {"balance": 10000, "contribution": 1000, "indexation_percent": 0},
+      "RRSP": {"balance": 100000, "contribution": 5000, "indexation_percent": 2.5},
+      "TFSA": {"balance": 50000, "contribution": 3000, "indexation_percent": 1}
+    }
+  },
+  "before_return_percent": 6,
+  "retirement_return_percent": 4,
+  "inflation_percent": 2,
+  "withdrawal_order": ["Cash", "RRSP", "TFSA"]
+}

@@ -1,0 +1,3 @@
+# Python 3.11+. The engine uses the standard library; PDF export needs ReportLab.
+reportlab>=4.2,<5
+# Node.js 22.18+ or 24+ is needed ONLY for source parity verification.

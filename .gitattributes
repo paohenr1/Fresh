@@ -1,0 +1,4 @@
+* text=auto eol=lf
+*.cmd text eol=crlf
+# The source parity checks verify these recovered files byte for byte.
+original_fresh/** -text whitespace=cr-at-eol

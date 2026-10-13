@@ -1,6 +1,7 @@
-node_modules/
-dist/
-test-results/
-playwright-report/
-*.local
-*.tsbuildinfo
+__pycache__/
+output/
+*.pyc
+.venv/
+backups/
+tmp/
+fresh-python.zip

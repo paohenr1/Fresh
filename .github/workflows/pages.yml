@@ -1,4 +1,4 @@
-name: Publish Fresh to GitHub Pages
+name: Preserve original Fresh website
 
 on:
   push:
@@ -18,8 +18,10 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out source
+      - name: Check out the backed-up browser application
         uses: actions/checkout@v4
+        with:
+          ref: codex/backup-main-2026-10-13
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
@@ -27,16 +29,14 @@ jobs:
           cache: npm
       - name: Install dependencies
         run: npm ci
-      - name: Test projection rules
+      - name: Test original projection rules
         run: npm test
-      - name: Build for GitHub Pages
+      - name: Build the original website
         run: npm run build
         env:
           GITHUB_PAGES: 'true'
-      - name: Configure Pages
-        uses: actions/configure-pages@v5
-      - name: Upload website
-        uses: actions/upload-pages-artifact@v3
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
         with:
           path: dist
 
@@ -47,6 +47,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Publish website
+      - name: Publish original website
         id: deployment
         uses: actions/deploy-pages@v4

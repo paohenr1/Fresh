@@ -1,0 +1,106 @@
+{
+  "unit_and_http_tests": {
+    "passed": 25,
+    "failed": 0
+  },
+  "pdf_checks": [
+    {
+      "file": "output/pdf/fresh-advisor-example.pdf",
+      "pages": 5,
+      "checks": "passed - simplified dashboard table"
+    },
+    {
+      "file": "output/pdf/fresh-client-example.pdf",
+      "pages": 3,
+      "checks": "passed"
+    },
+    {
+      "file": "tmp/pdfs/cases/changed-advisor.pdf",
+      "pages": 10,
+      "checks": "passed"
+    },
+    {
+      "file": "tmp/pdfs/cases/changed-client.pdf",
+      "pages": 3,
+      "checks": "passed"
+    },
+    {
+      "file": "tmp/pdfs/cases/depleted-advisor.pdf",
+      "pages": 7,
+      "checks": "passed"
+    },
+    {
+      "file": "tmp/pdfs/cases/depleted-client.pdf",
+      "pages": 3,
+      "checks": "passed"
+    },
+    {
+      "file": "tmp/pdfs/cases/single-long-advisor.pdf",
+      "pages": 19,
+      "checks": "passed"
+    },
+    {
+      "file": "tmp/pdfs/cases/single-long-client.pdf",
+      "pages": 4,
+      "checks": "passed"
+    }
+  ],
+  "notes": [
+    "Edited inputs preserved, including full-precision contribution rates.",
+    "Long single-person report retains final year and repeating page headers.",
+    "Asset depletion reported as shortfall."
+  ],
+  "layout_update": {
+    "date": "2026-10-13",
+    "tests_passed": 25,
+    "card_layout": "Five white boxes in one row with blue values",
+    "labels": "Shared dashboard/client/advisor labels, ages for individual plans and years for households",
+    "visual_review": "Client, advisor and individual-plan cover pages rendered and inspected"
+  },
+  "advisor_simplification": {
+    "tests_passed": 25,
+    "pdfs": [
+      {
+        "file": "output/pdf/fresh-advisor-example.pdf",
+        "pages": 5,
+        "checks": "passed"
+      },
+      {
+        "file": "tmp/pdfs/advisor-simple/real.pdf",
+        "pages": 5,
+        "checks": "passed"
+      },
+      {
+        "file": "tmp/pdfs/advisor-simple/long.pdf",
+        "pages": 5,
+        "checks": "passed"
+      }
+    ],
+    "description": "All inputs, dashboard summary/graphs and compact dashboard table; no extra audit tables."
+  },
+  "advisor_age_labels": {
+    "current_ages": [
+      65,
+      62
+    ],
+    "plan_end_ages": [
+      69,
+      69
+    ],
+    "projection_date_displayed": false,
+    "example_pages": 5,
+    "visual_review": "Updated cover and both input pages inspected"
+  },
+  "consistent_age_display": {
+    "tests_passed": 25,
+    "surfaces": [
+      "dashboard",
+      "saved HTML",
+      "client PDF",
+      "advisor PDF"
+    ],
+    "exact_date_editing": "Available under Edit date",
+    "projection_date_field": "Removed from visible UI and both PDFs",
+    "checks": "Birthday boundaries, PDF labels and page layouts checked"
+  }
+}

@@ -1,0 +1,193 @@
+{
+  "source_commit": "a0623571bd85c0c75c284efe4ba4dee550db8d9b",
+  "tolerance": {
+    "relative": 1e-12,
+    "absolute_cad": 1e-08
+  },
+  "cases": [
+    {
+      "case": "zero indexation and retirement timing",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 10,
+      "numeric_values_compared": 164,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "inflation-linked contributions",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 10,
+      "numeric_values_compared": 164,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "zero returns and depletion",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 10,
+      "numeric_values_compared": 164,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "negative returns",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 10,
+      "numeric_values_compared": 164,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "custom withdrawal order",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 10,
+      "numeric_values_compared": 164,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "partial retirement pro rata returns",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 10,
+      "numeric_values_compared": 161,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "survivor transfer",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 8,
+      "numeric_values_compared": 125,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "birthday benefits and inflation",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 10,
+      "numeric_values_compared": 150,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "leap birthday",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 11,
+      "numeric_values_compared": 164,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "later projection baseline",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 8,
+      "numeric_values_compared": 122,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "shortage then funded years",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 10,
+      "numeric_values_compared": 164,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "tiny shortfall threshold",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 10,
+      "numeric_values_compared": 150,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "CPP age 60 OAS deferral 0",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 10,
+      "numeric_values_compared": 150,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "CPP age 70 OAS deferral 5",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 10,
+      "numeric_values_compared": 150,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "funded with zero savings",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 10,
+      "numeric_values_compared": 150,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "original default 51-year single-person example",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 51,
+      "numeric_values_compared": 724,
+      "maximum_absolute_difference_cad": 2.3283064365386963e-10,
+      "result": "PASS"
+    },
+    {
+      "case": "original default 54-year spouse example",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 54,
+      "numeric_values_compared": 818,
+      "maximum_absolute_difference_cad": 9.313225746154785e-10,
+      "result": "PASS"
+    },
+    {
+      "case": "fictional household flat",
+      "reference": "untouched original TypeScript",
+      "annual_rows": 8,
+      "numeric_values_compared": 128,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "fictional household independent rates",
+      "reference": "single-formula indexation extension",
+      "annual_rows": 8,
+      "numeric_values_compared": 128,
+      "maximum_absolute_difference_cad": 5.820766091346741e-11,
+      "result": "PASS"
+    },
+    {
+      "case": "numeric indexation 2.5% versus 2% inflation",
+      "reference": "single-formula indexation extension",
+      "annual_rows": 10,
+      "numeric_values_compared": 164,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "numeric indexation -10% versus 2% inflation",
+      "reference": "single-formula indexation extension",
+      "annual_rows": 10,
+      "numeric_values_compared": 164,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "numeric indexation -100% versus 2% inflation",
+      "reference": "single-formula indexation extension",
+      "annual_rows": 10,
+      "numeric_values_compared": 164,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    },
+    {
+      "case": "numeric indexation 125% versus 2% inflation",
+      "reference": "single-formula indexation extension",
+      "annual_rows": 10,
+      "numeric_values_compared": 164,
+      "maximum_absolute_difference_cad": 0.0,
+      "result": "PASS"
+    }
+  ]
+}
