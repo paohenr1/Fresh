@@ -49,7 +49,6 @@ export default function App() {
   const [tableOpen, setTableOpen] = useState(false);
   const [exporting, setExporting] = useState(false);
   const [exportError, setExportError] = useState('');
-  const [realDollars, setRealDollars] = useState(false);
   const now = scenarioDate(scenario);
   const errors = useMemo(() => validate(scenario), [scenario]);
   const calculation = useMemo(() => {
@@ -76,7 +75,7 @@ export default function App() {
   const reset = () => { setScenario(defaultScenario()); setPersonKey('client'); setExportError(''); };
   const download = async (kind: 'client' | 'advisor') => {
     setExporting(true); setExportError('');
-    try { await exportPDF(structuredClone(scenario),kind,kind === 'advisor' && realDollars); }
+    try { await exportPDF(structuredClone(scenario),kind,false); }
     catch (error) { setExportError(error instanceof Error ? error.message : 'Unable to export. Please try again.'); }
     finally { setExporting(false); }
   };
@@ -94,8 +93,8 @@ export default function App() {
       </div><div className="hero-actions">
         <span className="live-note"><span /> Updates as you go</span>
         <div className="action-row"><button className="button button-subtle" onClick={reset} disabled={exporting}><RotateCcw size={15} />Reset example</button>
-          <button className="button button-subtle" onClick={() => download('client')} disabled={!projection || exporting}><Download size={16} />Export client PDF</button>
           <button className="button button-primary" onClick={() => download('advisor')} disabled={!projection || exporting}><Download size={16} />{exporting ? 'Preparing PDF…' : 'Export advisor PDF'}</button>
+          <button className="button button-primary" onClick={() => download('client')} disabled={!projection || exporting}><Download size={16} />Export client PDF</button>
         </div><span className="actions-note">A fresh copy of the scenario on your screen.</span>
       </div></section>
       {exportError && <div role="alert" className="error-banner">{exportError}</div>}
@@ -165,7 +164,7 @@ export default function App() {
         </section>
       </div>
       {projection && <section className="results-card annual-section"><button className="annual-toggle" aria-expanded={tableOpen} aria-controls="annual-table" onClick={() => setTableOpen(!tableOpen)}><div><span className="section-kicker">Every year, accounted for</span><h2>Your year-by-year projection</h2><p>Explore the numbers behind the picture. All balances are after annual growth.</p></div><span className="table-toggle-label">{tableOpen ? 'Hide details' : 'View all years'}<ArrowDown size={17} className={tableOpen ? 'rotated' : ''} /></span></button>
-        <div id="annual-table" hidden={!tableOpen}><label className="basis-picker">Dollar basis<select aria-label="Dollar basis" value={realDollars ? 'real' : 'nominal'} onChange={e => setRealDollars(e.target.value === 'real')}><option value="nominal">Nominal CAD</option><option value="real">Today's CAD ({projection.startYear} purchasing power)</option></select></label><Table projection={projection} hasSpouse={scenario.hasSpouse} inflation={scenario.inflation} real={realDollars} /><p className="table-note"><span className="row-marker" /> Retirement year <span className="shortage-key" /> Unfunded shortage · Income-target years begin at the first retirement. Ages are blank after a person’s plan ends.</p></div>
+        <div id="annual-table" hidden={!tableOpen}><Table projection={projection} hasSpouse={scenario.hasSpouse} /><p className="table-note"><span className="row-marker" /> Retirement year <span className="shortage-key" /> Unfunded shortage · Income-target years begin at the first retirement. Ages are blank after a person’s plan ends. Amounts are nominal CAD.</p></div>
       </section>}
       <section className="disclaimer-section"><div className="disclaimer-heading"><ShieldCheck size={17} /><h2>A few things to keep in mind</h2></div><p>{DISCLAIMER}</p><p>The current year counts as a full year. Each person retires at the start of their selected retirement year. Working income counts during partial retirement; only entered contributions add to savings. The survivor’s target uses their own original current income, adjusted for inflation.</p></section>
       <footer className="site-footer"><a href="#" className="footer-brand">fresh.</a><span>A clearer view. A more considered future.</span><span>Made for exploring, not predicting.</span></footer>

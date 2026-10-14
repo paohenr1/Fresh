@@ -1,12 +1,14 @@
 import {test,expect} from '@playwright/test';
 import path from 'node:path';
 
-test('dashboard edits, hidden indexation, real dollars and invalid inputs',async({page})=>{
+test('dashboard edits, hidden indexation, nominal dollars and invalid inputs',async({page})=>{
   const errors:string[]=[];page.on('pageerror',e=>errors.push(e.message));
   await page.goto('/');
   await page.context().setOffline(true);
   await expect(page.locator('.metric-value').first()).toHaveText('$495,000');
   await expect(page.getByRole('button',{name:'Export advisor PDF'})).toBeEnabled();
+  await expect(page.locator('.action-row .button-primary')).toHaveText(['Export advisor PDF','Export client PDF']);
+  await expect(page.getByLabel('Dollar basis')).toHaveCount(0);
   await expect(page.getByLabel('Client RRSP annual contribution increase')).toBeHidden();
   await page.locator('.account-group').nth(1).locator('summary').click();
   await page.getByLabel('Client RRSP annual contribution increase').fill('3.75');
@@ -22,8 +24,6 @@ test('dashboard edits, hidden indexation, real dollars and invalid inputs',async
   const firstPension=page.locator('tbody tr').first().locator('td').nth(7);
   await expect(firstPension).toHaveText('$18,000');
   await expect(page.locator('tbody tr').nth(1).locator('td').nth(7)).toHaveText('$18,450');
-  await page.getByLabel('Dollar basis').selectOption('real');
-  await expect(page.locator('tbody tr').nth(1).locator('td').nth(7)).toHaveText('$18,088');
   await page.getByLabel('Client Annual pension increase',{exact:true}).fill('-101');
   await expect(page.getByRole('button',{name:'Export advisor PDF'})).toBeDisabled();
   await expect(page.locator('.validation-state')).toBeVisible();
@@ -33,14 +33,14 @@ test('dashboard edits, hidden indexation, real dollars and invalid inputs',async
   await page.screenshot({path:'../tmp/browser-dashboard.png',fullPage:true});
 });
 
-test('both PDF exports use current indexed inputs and advisor dollar basis',async({page})=>{
+test('both PDF exports use current indexed inputs in nominal CAD',async({page})=>{
   await page.goto('/');
   await page.context().setOffline(true);
   await page.getByRole('button',{name:'03 Pension & benefits'}).click();
   await page.locator('.input-card').nth(2).locator('summary').click();
   await page.getByLabel('Client Annual pension increase',{exact:true}).fill('2.5');
   await page.getByRole('button',{name:/Your year-by-year projection/}).click();
-  await page.getByLabel('Dollar basis').selectOption('real');
+  await expect(page.getByLabel('Dollar basis')).toHaveCount(0);
   for(const kind of ['client','advisor']){
     const promise=page.waitForEvent('download');
     await page.getByRole('button',{name:`Export ${kind} PDF`}).click();

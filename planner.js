@@ -130,13 +130,10 @@ async function recalculate() {
     if (!response.ok) throw new Error(result.error || 'Please check your inputs.');
     const incoming = new DOMParser().parseFromString(result.html, 'text/html');
     const open = document.querySelector('.annual-toggle').getAttribute('aria-expanded') === 'true';
-    const basis = document.getElementById('dollar-basis').value;
     ['.results-column', '.annual-section'].forEach(selector => {
       document.querySelector(selector).replaceWith(incoming.querySelector(selector));
     });
     if (open) document.querySelector('.annual-toggle').click();
-    document.getElementById('dollar-basis').value = basis;
-    document.getElementById('dollar-basis').dispatchEvent(new Event('change', {bubbles: true}));
     initCharts();
     status.textContent = 'Up to date · changes calculate automatically';
     validVersion = requestedVersion;
@@ -152,7 +149,6 @@ async function recalculate() {
 pdfButtons.forEach(button => button.addEventListener('click', async () => {
   if (button.disabled || validVersion !== version) return;
   const snapshot = structuredClone(state);
-  const basis = button.dataset.pdf === 'advisor' && document.getElementById('dollar-basis').value === 'real' ? 'today_cad' : 'nominal_cad';
   const requestedVersion = version;
   const originalLabel = button.innerHTML;
   exportingPDF = true; updatePDFButtons();
@@ -163,7 +159,7 @@ pdfButtons.forEach(button => button.addEventListener('click', async () => {
   errors.hidden = true;
   try {
     const response = await fetch('/api/pdf/' + button.dataset.pdf, {
-      method:'POST', headers:{'Content-Type':'application/json','X-FRESH-Dollar-Basis':basis}, body:JSON.stringify(snapshot)
+      method:'POST', headers:{'Content-Type':'application/json','X-FRESH-Dollar-Basis':'nominal_cad'}, body:JSON.stringify(snapshot)
     });
     if (!response.ok) {
       const result = await response.json(); throw new Error(result.error || 'Unable to export PDF.');

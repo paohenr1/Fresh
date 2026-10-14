@@ -10,7 +10,7 @@ $css
 <header class="site-header"><div class="header-inner"><a class="wordmark" href="#" aria-label="Fresh home"><span class="brand-icon">$leaf</span>fresh<span class="wordmark-dot">.</span></a><div class="header-divider"></div><span class="header-name">Retirement planner</span><span class="privacy-badge">$lock Private by design</span></div></header>
 <main class="page-shell">
   <section class="hero"><div><p class="eyebrow"><span></span>A clearer tomorrow starts here</p><h1>Your future, <em>in perspective.</em></h1><p class="hero-copy">Turn today’s savings into a picture of tomorrow.<br class="desktop-break"> Explore your retirement, one simple scenario at a time.</p></div>
-    <div class="hero-actions"><span class="live-note"><span></span>Saved scenario · starts $base_year</span><div class="action-row"><button class="button button-primary pdf-export" data-pdf="client" disabled>$download Export client PDF</button><button class="button button-primary pdf-export" data-pdf="advisor" disabled>$download Export advisor PDF</button></div><span class="actions-note">Client overview or advisor record with every input and full annual tables. PDF export is available in the editable planner.</span></div>
+    <div class="hero-actions"><span class="live-note"><span></span>Saved scenario · starts $base_year</span><div class="action-row"><button class="button button-primary pdf-export" data-pdf="advisor" disabled>$download Export advisor PDF</button><button class="button button-primary pdf-export" data-pdf="client" disabled>$download Export client PDF</button></div><span class="actions-note">Client overview or advisor record with every input and full annual tables. PDF export is available in the editable planner.</span></div>
   </section>
   <div class="planner-layout">
     <aside class="inputs-column" aria-label="Saved scenario inputs"><div class="column-heading">$sliders<h2>Your scenario</h2><span>Saved inputs</span></div>$sidebar</aside>
@@ -24,7 +24,7 @@ $css
     </section>
   </div>
   <section class="results-card annual-section"><button class="annual-toggle" aria-expanded="false" aria-controls="annual-table"><div><span class="section-kicker">Every year, accounted for</span><h2>Your year-by-year projection</h2><p>Explore the numbers behind the picture. All balances are after annual growth.</p></div><span class="table-toggle-label"><span class="toggle-text">View all years</span>$chevron</span></button>
-    <div id="annual-table" hidden><div class="basis-picker"><label for="dollar-basis">Show values in</label><select id="dollar-basis"><option value="nominal">Nominal CAD</option><option value="real">Today’s CAD ($base_year purchasing power)</option></select></div><div data-basis="nominal">$nominal_table</div><div data-basis="real" hidden>$real_table</div><p class="table-note"><span class="row-marker"></span> Retirement year <span class="shortage-key"></span> Unfunded shortage · Income-target years begin at the first retirement. Ages are blank after a person’s plan ends.<br>Displayed amounts are rounded to whole dollars, as in the original FRESH. CSV and JSON retain full precision and complete account reconciliation. Today’s dollars use general inflation from $base_year.</p></div>
+    <div id="annual-table" hidden><div data-basis="nominal">$nominal_table</div><p class="table-note"><span class="row-marker"></span> Retirement year <span class="shortage-key"></span> Unfunded shortage · Income-target years begin at the first retirement. Ages are blank after a person’s plan ends.<br>Displayed amounts are nominal CAD rounded to whole dollars, as in the original FRESH. CSV and JSON retain full precision and complete account reconciliation.</p></div>
   </section>
   <section class="disclaimer-section"><div class="disclaimer-heading">$shield<h2>A few things to keep in mind</h2></div><p>Values are estimates, not guarantees. This is a gross, pre-tax illustration. Income taxes, OAS clawback, GIS, RRIF minimums, LIF maximums, pension splitting, fees, survivor pensions and CPP survivor benefits are excluded.</p><p>The current year counts as a full year. Each person retires at the start of their selected retirement year. Working income counts during partial retirement; only entered contributions add to savings. The survivor’s target uses their own original current income, adjusted for inflation.</p></section>
   <footer class="site-footer"><a href="#" class="footer-brand">fresh.</a><span>A clearer view. A more considered future.</span><span>Made for exploring, not predicting.</span></footer>
@@ -51,10 +51,6 @@ document.querySelectorAll('[data-person-tab]').forEach(button => {
     });
     document.querySelectorAll('[data-person]').forEach(panel => { panel.hidden = panel.dataset.person !== person; });
   });
-});
-document.addEventListener('change', event => {
-  if (event.target.id !== 'dollar-basis') return;
-  document.querySelectorAll('[data-basis]').forEach(panel => { panel.hidden = panel.dataset.basis !== event.target.value; });
 });
 function initCharts() {
 document.querySelectorAll('.chart-canvas').forEach(canvas => {

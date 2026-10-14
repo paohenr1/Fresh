@@ -55,6 +55,8 @@ class InteractivePlannerTests(unittest.TestCase):
         self.assertIn('data-input="client.plan_end" type="date"', html)
         self.assertIn('data-age="client.current_age"', html)
         self.assertIn('class="date-edit"', html)
+        self.assertNotIn('id="dollar-basis"', html)
+        self.assertLess(html.index('data-pdf="advisor"'), html.index('data-pdf="client"'))
 
     def test_changed_inputs_and_downloads_match_python(self):
         data = deepcopy(self.inputs)

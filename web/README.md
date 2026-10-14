@@ -27,7 +27,7 @@ interface, `src/Charts.tsx` draws area graphs and annual tables, and `src/pdf.ts
 produces both reports from an input snapshot. Whole-dollar display rounds ties
 to even, as Python does, while calculations retain full precision.
 
-`tests/browser.spec.ts` checks hidden indexation, changing values, dollar basis,
+`tests/browser.spec.ts` checks hidden indexation, changing values, nominal tables,
 invalid inputs, exact-date editors, mobile layout, offline exports and long
 projection reports. Run `npm run test:browser --prefix web` using installed Edge
 on Windows; CI installs Playwright Chromium on Linux.
