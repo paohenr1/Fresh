@@ -27,6 +27,13 @@ interface, `src/Charts.tsx` draws area graphs and annual tables, and `src/pdf.ts
 produces both reports from an input snapshot. Whole-dollar display rounds ties
 to even, as Python does, while calculations retain full precision.
 
+Once either person retires, net household income above the target enters Cash
+before growth. The net surplus is allocated proportionally using positive
+personal income excesses over each person's target share; each Cash owner keeps
+their existing working/retired return rate. Salary alone cannot create excess,
+but CPP/OAS can begin before retirement at their selected ages. Contribution
+fields remain entered contributions and no surplus column is added.
+
 `tests/browser.spec.ts` checks hidden indexation, changing values, nominal tables,
 invalid inputs, exact-date editors, mobile layout, offline exports and long
 projection reports. Run `npm run test:browser --prefix web` using installed Edge

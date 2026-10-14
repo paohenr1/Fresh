@@ -65,6 +65,20 @@ test('long retirement tables export with continuation pages',async({page})=>{
   await download.saveAs(path.resolve('../tmp/pdfs/fresh-browser-long-advisor.pdf'));
 });
 
+test('retirement surplus enters Cash before growth without adding columns',async({page})=>{
+  await page.goto('/');
+  await page.getByRole('switch',{name:'Include spouse'}).click();
+  await page.getByRole('button',{name:'03 Pension & benefits'}).click();
+  await page.getByLabel('Client Annual pension payable at retirement',{exact:true}).fill('80000');
+  await page.getByLabel('Client % of maximum CPP',{exact:true}).fill('0');
+  await page.getByLabel('Client % of maximum OAS',{exact:true}).fill('0');
+  await expect(page.locator('.inputs-column')).toContainText('Once either person retires, income above the household retirement target is automatically added to Cash.');
+  await page.getByRole('button',{name:/Your year-by-year projection/}).click();
+  await expect(page.locator('tbody tr').first().locator('td').nth(8)).toHaveText('$46,800');
+  await expect(page.locator('thead th')).toHaveCount(12);
+  await expect(page.getByRole('button',{name:'Export client PDF'})).toBeEnabled();
+});
+
 test('date editors retain exact dates and narrow layouts remain usable',async({page})=>{
   await page.setViewportSize({width:390,height:844});await page.goto('/');
   await expect(page.getByLabel('Client Current age',{exact:true})).toHaveValue('65');

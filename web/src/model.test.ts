@@ -86,7 +86,7 @@ describe('separate retirements and household withdrawals', () => {
     // Client: 300 - 37.5. Spouse: (100 - 12.5) * 2.
     expect(r.total).toBe(437.5);
   });
-  it('does not automatically invest employment or benefit income', () => {
+  it('does not automatically save income before either person retires', () => {
     const s = scenario(); s.client.retirementAge = 70; s.client.cppPercent = 100;
     s.client.income = 100000;
     const r = project(s, NOW).rows[0];
@@ -149,6 +149,35 @@ describe('government benefit calculations', () => {
 });
 
 describe('verdicts and validation', () => {
+  it('saves retirement income excess to Cash before growth without changing contributions', () => {
+    const s=scenario();s.client.income=100;s.client.pension=120;s.retirementReturn=10;
+    const p=project(s,NOW);
+    expect(p.rows[0].balances.Cash).toBeCloseTo(22);
+    expect(p.rows[1].balances.Cash).toBeCloseTo(46.2);
+    expect(p.rows[0].contributions).toBe(0);expect(p.rows[0].draw).toBe(0);
+    expect(Object.keys(p.rows[0]).some(key=>key.toLowerCase().includes('surplus'))).toBe(false);
+  });
+  it('allocates partial-retirement net excess to the people with personal excess', () => {
+    const s=scenario();s.hasSpouse=true;s.beforeReturn=10;s.retirementReturn=4;
+    s.client.income=100;s.client.pension=80;
+    s.spouse=blankPerson();s.spouse.retirementAge=70;s.spouse.income=50;
+    s.spouse.cppPercent=40/GOVERNMENT.cppAnnualMaximum*100;
+    const row=project(s,NOW).rows[0];
+    expect(row.need).toBe(150);expect(row.employment).toBe(50);
+    expect(row.balances.Cash).toBeCloseTo(22);
+    s.client.pension=130;s.spouse.cppPercent=10/GOVERNMENT.cppAnnualMaximum*100;
+    expect(project(s,NOW).rows[0].balances.Cash).toBeCloseTo(30*1.04+10*1.10);
+  });
+  it('saved income funds later gaps and respects annual balance reconciliation', () => {
+    const s=scenario();s.client.income=100;s.client.pension=150;s.client.pensionIndexationPercent=-50;
+    const p=project(s,NOW);
+    expect(p.rows[0].balances.Cash).toBe(50);expect(p.rows[1].draw).toBe(25);
+    expect(p.rows[2].shortage).toBe(37.5);expect(p.rows[2].total).toBe(0);
+    p.rows.forEach(row=>ACCOUNTS.forEach(account=>{
+      const saved=row.retired && account==='Cash' ? Math.max(0,row.employment+row.pension+row.cpp+row.oas-row.need) : 0;
+      expect(row.balances[account]).toBeCloseTo(row.openingBalances[account]+row.contributionsByAccount[account]+saved-row.withdrawalsByAccount[account]+row.investmentReturns[account],8);
+    }));
+  });
   it('matches Python whole-dollar tie rounding without changing calculations', () => {
     expect(currency(100.5)).toBe('$100');
     expect(currency(101.5)).toBe('$102');

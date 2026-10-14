@@ -150,8 +150,15 @@ def main():
             for account in ACCOUNTS:
                 expected = (row.opening_balances[account] + row.contributions_by_account[account]
                             - row.withdrawals_by_account[account] + row.investment_returns[account])
+                if row.retired and account == 'Cash':
+                    expected += max(0.0, row.employment + row.pension + row.cpp + row.oas - row.need)
                 assert math.isclose(expected, row.balances[account], rel_tol=1e-12, abs_tol=1e-8)
-        report.append({"case": name, "reference": "single-formula indexation extension" if numeric else "untouched original TypeScript",
+        reference_label = "single-formula indexation extension" if numeric else "untouched original TypeScript"
+        if original['surplus_saving']:
+            reference_label += "; approved surplus-saving extension"
+        report.append({"case": name, "reference": reference_label,
+                       "intentional_surplus_saving": original['surplus_saving'],
+                       "legacy_final_balance_difference_cad": original['legacy_final_balance_difference_cad'],
                        "annual_rows": len(projection.rows), "numeric_values_compared": number_count,
                        "maximum_absolute_difference_cad": maximum_difference, "result": "PASS"})
     result = {"source_commit": snapshot["commit"],

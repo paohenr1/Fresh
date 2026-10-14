@@ -134,20 +134,39 @@ def project(scenario: Scenario, as_of: date) -> Projection:
                     contributions += amount
 
         # Step 2: target is 100% of active people's original current incomes.
-        # Working income counts during partial retirement; no surplus is reinvested.
+        # Working income counts during partial retirement. Retired-year surplus
+        # is saved separately from entered contributions; no output column is added.
         need = sum(p.income * inflation_factor for i, p in enumerate(people)
                    if active[i]) if retired else 0.0
-        employment = sum(p.income * inflation_factor for i, p in enumerate(people)
-                         if active[i] and year < retirement_years[i])
+        employment_by_person = [p.income * inflation_factor
+                                if active[i] and year < retirement_years[i] else 0.0
+                                for i, p in enumerate(people)]
+        employment = sum(employment_by_person)
         # The entered pension is payable in its retirement year (t=0).
         # Already-retired owners retain that retirement-year base; rates are %.
-        pension = sum(indexed_amount(p.pension, p.pension_indexation_percent,
-                                     year - retirement_years[i])
-                      for i, p in enumerate(people)
-                      if active[i] and year >= retirement_years[i])
-        cpp = sum(benefit(p, "cpp", year, scenario.inflation_percent) for p in people)
-        oas = sum(benefit(p, "oas", year, scenario.inflation_percent) for p in people)
+        pension_by_person = [indexed_amount(p.pension, p.pension_indexation_percent,
+                                           year - retirement_years[i])
+                             if active[i] and year >= retirement_years[i] else 0.0
+                             for i, p in enumerate(people)]
+        pension = sum(pension_by_person)
+        cpp_by_person = [benefit(p, "cpp", year, scenario.inflation_percent) for p in people]
+        oas_by_person = [benefit(p, "oas", year, scenario.inflation_percent) for p in people]
+        cpp, oas = sum(cpp_by_person), sum(oas_by_person)
         remaining = max(0.0, need - employment - pension - cpp - oas) if retired else 0.0
+
+        # Save only the household's net excess, not each person's gross excess.
+        # Positive individual excesses supply allocation weights: someone else's
+        # funding gap is covered first. Cash then earns its owner's existing rate.
+        surplus = max(0.0, employment + pension + cpp + oas - need) if retired else 0.0
+        if surplus > 0:
+            excesses = [max(0.0, employment_by_person[i] + pension_by_person[i]
+                            + cpp_by_person[i] + oas_by_person[i] - p.income * inflation_factor)
+                        if active[i] else 0.0 for i, p in enumerate(people)]
+            total_excess = sum(excesses)
+            if not math.isfinite(total_excess) or total_excess <= 0:
+                raise ValueError("Income surplus cannot be allocated at this numeric precision")
+            for i, excess in enumerate(excesses):
+                balances[i]["Cash"] += surplus * (excess / total_excess)
 
         # Step 3: ordered household draws, allocated pro rata within each type.
         # Contributions are already available, including a working spouse's.

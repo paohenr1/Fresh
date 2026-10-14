@@ -108,7 +108,7 @@ class ProjectionTests(unittest.TestCase):
         self.assertEqual(p.funded_years, p.retirement_years_count - 1)
         self.assertEqual(p.rows[1].shortage, 0)
 
-    def test_no_automatic_surplus_saving_and_no_assets_required(self):
+    def test_pre_retirement_income_is_not_saved_and_no_assets_required(self):
         client = replace(blank_person(), income=100, pension=100)
         p = project(Scenario(client, None, 0, 0, 0), AS_OF)
         self.assertIsNone(p.first_shortfall)
@@ -127,9 +127,11 @@ class ProjectionTests(unittest.TestCase):
         for row in p.rows:
             self.assertAlmostEqual(sum(row.opening_balances.values()), previous)
             for name in ACCOUNTS:
+                surplus = (max(0, row.employment + row.pension + row.cpp + row.oas - row.need)
+                           if row.retired and name == 'Cash' else 0)
                 self.assertAlmostEqual(row.balances[name], row.opening_balances[name]
                     + row.contributions_by_account[name] - row.withdrawals_by_account[name]
-                    + row.investment_returns[name])
+                    + surplus + row.investment_returns[name])
             if row.retired:
                 gap = max(0, row.need - row.employment - row.pension - row.cpp - row.oas)
                 self.assertAlmostEqual(gap, row.draw + row.raw_shortage)

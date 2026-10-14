@@ -144,6 +144,24 @@
       "maximum_absolute_difference_cad": 0.0
     },
     {
+      "case": "partial retirement surplus from working spouse CPP",
+      "result": "PASS",
+      "numeric_values_compared": 319,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "partial retirement multiple positive excesses",
+      "result": "PASS",
+      "numeric_values_compared": 291,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "surplus funds later depletion",
+      "result": "PASS",
+      "numeric_values_compared": 307,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
       "case": "pension 0% already retired False",
       "result": "PASS",
       "numeric_values_compared": 232,
@@ -195,13 +213,13 @@
       "case": "pension 125% already retired False",
       "result": "PASS",
       "numeric_values_compared": 232,
-      "maximum_absolute_difference_cad": 0.0
+      "maximum_absolute_difference_cad": 1.1641532182693481e-10
     },
     {
       "case": "pension 125% already retired True",
       "result": "PASS",
       "numeric_values_compared": 232,
-      "maximum_absolute_difference_cad": 0.0
+      "maximum_absolute_difference_cad": 9.313225746154785e-10
     }
   ]
 }

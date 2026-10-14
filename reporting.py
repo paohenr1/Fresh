@@ -260,7 +260,7 @@ def _sidebar(scenario: Scenario, as_of: date, interactive: bool = False) -> str:
                      '<div>' + field("Annual contribution", f"{account.contribution:g}", "$") +
                      indexation_editor("Annual contribution increase", account.indexation_percent) + '</div>') + '</div>')
         account_blocks.append('<p class="field-note">0% keeps contributions flat; 2.5% increases them by 2.5% each year. Separate from inflation and investment returns.</p>')
-        accounts.append(panel(''.join(account_blocks) + '<p class="field-note">Contributions stop in your retirement year. Income isn’t automatically invested.</p>'))
+        accounts.append(panel(''.join(account_blocks) + '<p class="field-note">Contributions stop in each person’s retirement year. Once either person retires, income above the household retirement target is automatically added to Cash.</p>'))
         benefits.append(panel(field("Annual pension payable at retirement", f"{person.pension:g}", "$") +
             indexation_editor("Annual pension increase", person.pension_indexation_percent) +
             '<p class="field-note pension-note">The entered pension is the retirement-year amount. Annual increases start the following year. No survivor pension is modeled.</p><div class="benefit-heading">CPP</div>' +

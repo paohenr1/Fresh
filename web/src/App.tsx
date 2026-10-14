@@ -120,7 +120,7 @@ export default function App() {
                   <Field label="Annual contribution increase" ariaLabel={`${who} ${type} annual contribution increase`} suffix="%" min={-100} value={person.accounts[type].indexationPercent} error={errors[`${personKey}.${type}.indexationPercent`]} onChange={v => setPerson('accounts',{...person.accounts,[type]:{...person.accounts[type],indexationPercent:numeric(v)}})} />
                 </details>}</div>)}</div>
             </div>)}
-            <p className="field-note">Contributions stop in your retirement year. Income isn’t automatically invested.</p>
+            <p className="field-note">Contributions stop in each person’s retirement year. Once either person retires, income above the household retirement target is automatically added to Cash.</p>
           </InputCard>
           <InputCard number="03" title="Pension & benefits" subtitle="Income alongside your savings" initiallyOpen={false}>
             {personField('pension', 'Annual pension payable at retirement', { prefix: '$', min: 0 })}
@@ -166,7 +166,7 @@ export default function App() {
       {projection && <section className="results-card annual-section"><button className="annual-toggle" aria-expanded={tableOpen} aria-controls="annual-table" onClick={() => setTableOpen(!tableOpen)}><div><span className="section-kicker">Every year, accounted for</span><h2>Your year-by-year projection</h2><p>Explore the numbers behind the picture. All balances are after annual growth.</p></div><span className="table-toggle-label">{tableOpen ? 'Hide details' : 'View all years'}<ArrowDown size={17} className={tableOpen ? 'rotated' : ''} /></span></button>
         <div id="annual-table" hidden={!tableOpen}><Table projection={projection} hasSpouse={scenario.hasSpouse} /><p className="table-note"><span className="row-marker" /> Retirement year <span className="shortage-key" /> Unfunded shortage · Income-target years begin at the first retirement. Ages are blank after a person’s plan ends. Amounts are nominal CAD.</p></div>
       </section>}
-      <section className="disclaimer-section"><div className="disclaimer-heading"><ShieldCheck size={17} /><h2>A few things to keep in mind</h2></div><p>{DISCLAIMER}</p><p>The current year counts as a full year. Each person retires at the start of their selected retirement year. Working income counts during partial retirement; only entered contributions add to savings. The survivor’s target uses their own original current income, adjusted for inflation.</p></section>
+      <section className="disclaimer-section"><div className="disclaimer-heading"><ShieldCheck size={17} /><h2>A few things to keep in mind</h2></div><p>{DISCLAIMER}</p><p>The current year counts as a full year. Each person retires at the start of their selected retirement year. Working income counts during partial retirement. Once either person retires, income above the household target is added to Cash before annual growth. Before either person retires, only entered contributions add to savings. The survivor’s target uses their own original current income, adjusted for inflation.</p></section>
       <footer className="site-footer"><a href="#" className="footer-brand">fresh.</a><span>A clearer view. A more considered future.</span><span>Made for exploring, not predicting.</span></footer>
     </main>
   </>;

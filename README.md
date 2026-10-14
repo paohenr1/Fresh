@@ -155,7 +155,7 @@ does not advance that date or change birthdays automatically.
 
 The browser and Python engines use identical annual cash-flow timing, independent
 contribution/pension indexation percentages, and separate general inflation.
-`python tests/verify_browser.py` compares 33 scenarios, including every annual
+`python tests/verify_browser.py` compares 36 scenarios, including every annual
 account reconciliation field. Results are recorded in
 `browser_verification_results.json`; maximum observed difference is below
 0.000000001 CAD. Browser whole-dollar display uses Python's ties-to-even rounding.
@@ -284,6 +284,13 @@ Already retired people are supported. Loss returns never make balances negative.
    occurs in their retirement year.
 3. Compute the target and income. During partial retirement the active working
    spouse's employment income counts toward the household target.
+   Once either person retires, income above the household target is added to
+   Cash before annual investment growth. Income includes employment, pension,
+   CPP and OAS. Entered contributions are separate and are not income.
+   Allocate the net surplus proportionally to active people whose own income
+   exceeds their inflation-adjusted share of the target. Each person's Cash
+   keeps its existing working/retired return regime. A working person's salary
+   alone equals their target share; early CPP/OAS can create a personal excess.
 4. Withdraw the positive income gap in the selected type order. Draw each type
    proportionally from its owners; stop at available assets and record unmet need.
 5. Apply each owner's annual return to remaining balances; record closing balances.
@@ -318,9 +325,10 @@ birthday_fraction = days from start birthday through December 31, inclusive
 ```
 
 February 29 becomes February 28 in non-leap benefit start years. Benefits can
-start before retirement and stop after the person's plan-end year. Neither
-benefit nor employment surplus is automatically saved. Only explicit
-contributions add funds. After a plan ends, the survivor uses their own original
+start before retirement and stop after the person's plan-end year. Before either
+person retires, only explicit contributions add funds. Once either retires,
+income above the household target is added to Cash before growth. After a plan
+ends, the survivor uses their own original
 income for the target and their own return regime for inherited accounts.
 
 ## Walk through a fictional year
@@ -363,9 +371,14 @@ in 2026 purchasing power. All 8 projected retirement years are funded.
 Each account satisfies, apart from floating-point roundoff:
 
 ```text
-closing = opening + contribution − withdrawal + investment return
+closing = opening + contribution + saved retirement-income surplus − withdrawal + investment return
 retirement funding gap = investment draw + raw unmet spending
 ```
+
+Only Cash receives the saved surplus. It can be derived from existing income
+fields as `max(0, employment + pension + CPP + OAS − target)` in retirement
+years, and is zero before either person retires. No surplus column or separate
+annual output field is added; entered contribution fields retain their meaning.
 
 CSV and JSON suffixes `_nominal_cad` and `_today_cad` identify the units. Today's
 values use the opening year's purchasing power and exponent `year − start_year`
@@ -395,16 +408,21 @@ compares every original annual field and summary metric, and writes
 `verification_results.json`. It does not push changes or query financial services.
 
 The original source cannot accept a rate different from 0/inflation. Those cases
-use a separately loaded copy with **only the contribution expression replaced**;
-they are marked as a formula extension, not claimed as unchanged-model parity.
-Independent hand-calculated tests check 2.5%, 0%, and separate inflation.
+use a separately loaded copy with the contribution expression replaced.
+Cases with retirement income above the target also require an in-memory
+surplus-saving extension of the old source. Neither extension edits
+`original_fresh/`. Cases without surplus compare all original fields unchanged;
+cases with surplus explicitly report their intentional difference in final
+savings from the old behavior. This is an approved change, not roundoff or a fix.
+Independent hand-calculated tests check saving, growth, partial-retirement
+allocation, subsequent withdrawal/depletion and survivor years.
 
-Observed results: **18 Python tests passed; 23 comparison scenarios passed**.
-The 18 unchanged-source scenarios differed by at most CAD 0.00000000093133
-(the original 54-year spouse example); 16 matched exactly. The 5 formula-extension
-scenarios differed by at most CAD 0.00000000005821. These are binary floating-point
-roundoff differences far below a cent. Comparison tolerance is absolute CAD 1e-8 or relative
-1e-12. Annual account reconciliation also passed for every comparison row.
+Current results: **41 Python tests, 24 browser model tests and 36 browser/Python
+comparison scenarios passed**. The 23 original-source/extension comparisons also
+passed. Floating-point differences in equivalent calculations remain below
+CAD 0.000000001. Comparison tolerance is absolute CAD 1e-8 or relative 1e-12.
+Cash reconciliation includes the derived saved surplus; no surplus column is
+added, and contribution fields still contain only entered contributions.
 See [verification results](verification_results.json) and
 [verification notes](VERIFICATION.md) for reproducible evidence and limitations.
 

@@ -17,6 +17,8 @@ sys.path.insert(0, str(ROOT))
 from inputs import scenario_from_dict
 from projection import project
 from tests.verify_original import cases, reference_scenario, source_output
+from tests.test_calculations import blank_person, blank_scenario
+from inputs import GOVERNMENT
 
 
 def main():
@@ -24,6 +26,19 @@ def main():
     scenarios = [(name, scenario, on) for name, scenario, on, _ in cases()]
     data = json.loads((ROOT / 'examples/fictional.json').read_text())
     base = scenario_from_dict(data)
+    client = replace(blank_person(), income=100, pension=80)
+    spouse = replace(blank_person(), retirement_age=70, income=50,
+                     cpp_percent=40 / GOVERNMENT.cpp_annual_maximum * 100)
+    partial = replace(blank_scenario(), client=client, spouse=spouse,
+                      before_return_percent=10, retirement_return_percent=4)
+    scenarios.extend([
+        ('partial retirement surplus from working spouse CPP',partial,date(2026,10,8)),
+        ('partial retirement multiple positive excesses',replace(partial,
+            client=replace(client,pension=130),spouse=replace(spouse,
+            cpp_percent=10 / GOVERNMENT.cpp_annual_maximum * 100)),date(2026,10,8)),
+        ('surplus funds later depletion',replace(blank_scenario(),client=replace(
+            blank_person(),income=100,pension=150,pension_indexation_percent=-50)),date(2026,10,8)),
+    ])
     for rate in (0, 2.5, -10, -100, 125):
         for already_retired in (False, True):
             person = replace(base.client, dob=date(1959 if already_retired else 1963, 6, 15),

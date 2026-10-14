@@ -60,7 +60,7 @@ specification and the implemented engine together.
 | Income chart | Working salary excluded even though it funds the target | Preserved with explicit explanation |
 | Gross target | 100% of current gross income; working contributions are not deducted from available income | Preserved; no after-tax spending inference |
 | Benefit reference values | Supplied fixed 2026 figures, extrapolated with inflation | Preserved without asserting these are current legal entitlements |
-| Surplus income | Not added to accounts | Preserved; only entered contributions build savings |
+| Surplus income | Not added to accounts | Approved extension: after either person retires, income above the household target enters Cash before growth; no extra annual column |
 | Extreme values | Finite inputs can overflow during compounding | Python rejects unrepresentable results explicitly |
 | Balance audit | Original has no opening/growth/account-draw columns | Add them without changing the calculation |
 | Display precision | Original money displays whole dollars | Python CSV/JSON retain precision; HTML rounds to cents |
@@ -73,6 +73,18 @@ following year, including elapsed retirement years for already-retired people.
 This is an intentional new assumption input, not a correction to the original.
 At 0%, original-model comparisons remain unchanged. Collapsed Edit indexation
 controls affect visibility only, and advisor PDFs list every rate.
+
+### Approved retirement-surplus saving
+
+Once either person retires, household employment, pension, CPP and OAS above
+the household target are saved into Cash before growth. A person's positive
+income excess over their own target share supplies their allocation weight;
+only the net household surplus is saved after covering everyone's target.
+Cash retains its owner's applicable return rate. Before either person retires,
+only entered contributions add savings. CPP/OAS start-age rules remain unchanged.
+No surplus column is added; contribution fields continue to mean entered
+contributions. Original-source comparisons with excess income now require
+this explicitly labeled extension, rather than claiming unchanged parity.
 
 No substantive calculation contradiction between the final source and
 specification was found. No financial calculation fixes were imposed. This is

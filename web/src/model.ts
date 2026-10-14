@@ -183,13 +183,28 @@ export function project(s: Scenario, now = scenarioDate(s)): Projection {
       }
     });
     const need = retired ? people.reduce((sum, p, i) => sum + (active[i] ? p.income * inflationFactor : 0), 0) : 0;
-    const employment = people.reduce((sum, p, i) => sum + (active[i] && year < retirementYears[i] ? p.income * inflationFactor : 0), 0);
+    const employmentByPerson = people.map((p,i) => active[i] && year < retirementYears[i] ? p.income * inflationFactor : 0);
+    const employment = employmentByPerson.reduce((sum,value) => sum+value,0);
     // Pension t=0 is the retirement year, including for already-retired people.
-    const pension = people.reduce((sum, p, i) => sum + (active[i] && year >= retirementYears[i]
-      ? indexedAmount(p.pension, p.pensionIndexationPercent, year - retirementYears[i]) : 0), 0);
-    const cpp = people.reduce((sum, p) => sum + benefit(p, 'cpp', year, s.inflation), 0);
-    const oas = people.reduce((sum, p) => sum + benefit(p, 'oas', year, s.inflation), 0);
+    const pensionByPerson = people.map((p,i) => active[i] && year >= retirementYears[i]
+      ? indexedAmount(p.pension, p.pensionIndexationPercent, year - retirementYears[i]) : 0);
+    const pension = pensionByPerson.reduce((sum,value) => sum+value,0);
+    const cppByPerson = people.map(p => benefit(p,'cpp',year,s.inflation));
+    const oasByPerson = people.map(p => benefit(p,'oas',year,s.inflation));
+    const cpp = cppByPerson.reduce((sum,value) => sum+value,0);
+    const oas = oasByPerson.reduce((sum,value) => sum+value,0);
     let remaining = retired ? Math.max(0, need - employment - pension - cpp - oas) : 0;
+    // Save the net household excess. Allocate using positive personal excesses,
+    // after funding everyone's target, retaining each Cash owner's return regime.
+    // Entered contributions retain their meaning; no surplus output column.
+    const surplus = retired ? Math.max(0,employment+pension+cpp+oas-need) : 0;
+    if (surplus>0) {
+      const excesses = people.map((p,i) => active[i] ? Math.max(0,
+        employmentByPerson[i]+pensionByPerson[i]+cppByPerson[i]+oasByPerson[i]-p.income*inflationFactor) : 0);
+      const totalExcess = excesses.reduce((sum,value) => sum+value,0);
+      if (!Number.isFinite(totalExcess) || totalExcess<=0) throw new Error('Income surplus cannot be allocated at this numeric precision.');
+      excesses.forEach((excess,i) => {balances[i].Cash += surplus*(excess/totalExcess);});
+    }
     let draw = 0;
     for (const type of s.order) {
       const total = balances.reduce((sum, b) => sum + b[type], 0);

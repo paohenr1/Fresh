@@ -97,7 +97,7 @@ export function buildPDF(s: Scenario, kind: PDFKind, real: boolean, images: stri
     doc.addImage(image,'PNG',17,y+12,176,68.5);
     note(i===0 ? 'Balances after growth. Dashed markers show retirement years.' : 'Working income counts in calculations but is excluded here. A graph gap alone does not mean a shortfall.',y+86);
   });
-  note('The current year is a full year. Contributions and withdrawals occur before investment growth. Contributions stop in each retirement year. After a plan ends, income stops; the survivor target follows their own original income and general inflation.',258);
+  note('The current year is a full year. Contributions and withdrawals occur before growth. Contributions stop in each retirement year. Once either person retires, income above the household target is added to Cash before growth. Allocation follows each person\'s positive excess over their own target share; their Cash earns their applicable return rate. Before either person retires, only entered contributions add savings. After a plan ends, income stops and the survivor target follows their own original income and inflation.',258);
   doc.addPage('a4','landscape');
   const basis=tableReal ? `Today's CAD (${p.startYear} purchasing power)` : 'Nominal CAD';
   const money=(value:number,year:number)=>currency(value/(tableReal ? Math.pow(1+s.inflation/100,year-p.startYear) : 1));

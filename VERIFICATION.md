@@ -1,5 +1,25 @@
 # Verification of the Python port
 
+## Retirement surplus saving - October 14, 2026
+
+The approved rule adds net household income above the target to Cash once
+either person retires, before growth. Positive personal income excesses determine
+allocation; each Cash owner retains their existing return rate. No extra annual
+output column is added and entered contributions are not relabeled as surplus.
+CPP/OAS may still begin at their selected ages before retirement.
+
+41 Python tests and 24 browser model tests pass. 36 browser/Python comparisons
+include surplus accumulation, personal allocation during partial retirement,
+different owner return regimes, subsequent asset depletion, and reconciliation.
+Maximum numerical difference is 9.31322574615e-10 CAD. The 23 original-source
+comparisons pass with an explicitly labeled in-memory surplus extension where
+necessary; their final-balance differences from the legacy model are recorded
+as intentional changes in `verification_results.json`. Cases without surplus
+retain their previous comparison. The original reference files remain unchanged.
+
+Earlier verification sections below are historical. Current dashboards and
+their PDF exports use nominal CAD, with no dollar-basis selector.
+
 ## Simplified advisor export - October 13, 2026
 
 The advisor report now includes every input, five summary boxes, both graphs
