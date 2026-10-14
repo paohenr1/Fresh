@@ -52,7 +52,7 @@ specification and the implemented engine together.
 | Midyear starting date | Whole current year, including full contributions | Preserved; explicit `as_of` date makes tests reproducible |
 | Retirement birthday | January 1 of age-attainment year | Preserved; only benefits receive birthday proration |
 | Exact plan-end date | Only the year affects the projection | Preserved and documented |
-| Contribution indexing scope | Only six possible person/account contribution switches | Replace those switches alone; pensions remain fixed |
+| Contribution indexing scope | Only six possible person/account contribution switches | Original port replaced those switches alone; the later approved pension extension is documented below |
 | Return timing | Draws precede growth; depleted assets cannot earn their way out of that year's shortage | Preserved |
 | Savings at retirement | Opening household savings before all contributions, including working spouse's | Preserved |
 | Funded years | Counts all funded retirement years, not consecutive years before first shortage | Preserved; first shortage remains visible |
@@ -64,6 +64,15 @@ specification and the implemented engine together.
 | Extreme values | Finite inputs can overflow during compounding | Python rejects unrepresentable results explicitly |
 | Balance audit | Original has no opening/growth/account-draw columns | Add them without changing the calculation |
 | Display precision | Original money displays whole dollars | Python CSV/JSON retain precision; HTML rounds to cents |
+
+### Approved pension extension
+
+Pensions now have a separate annual percentage per person, defaulting to 0.
+The entered amount is payable in the retirement year (t=0); increases begin the
+following year, including elapsed retirement years for already-retired people.
+This is an intentional new assumption input, not a correction to the original.
+At 0%, original-model comparisons remain unchanged. Collapsed Edit indexation
+controls affect visibility only, and advisor PDFs list every rate.
 
 No substantive calculation contradiction between the final source and
 specification was found. No financial calculation fixes were imposed. This is

@@ -139,7 +139,11 @@ def project(scenario: Scenario, as_of: date) -> Projection:
                    if active[i]) if retired else 0.0
         employment = sum(p.income * inflation_factor for i, p in enumerate(people)
                          if active[i] and year < retirement_years[i])
-        pension = sum(p.pension for i, p in enumerate(people)
+        # The entered pension is payable in its retirement year (t=0).
+        # Already-retired owners retain that retirement-year base; rates are %.
+        pension = sum(indexed_amount(p.pension, p.pension_indexation_percent,
+                                     year - retirement_years[i])
+                      for i, p in enumerate(people)
                       if active[i] and year >= retirement_years[i])
         cpp = sum(benefit(p, "cpp", year, scenario.inflation_percent) for p in people)
         oas = sum(benefit(p, "oas", year, scenario.inflation_percent) for p in people)

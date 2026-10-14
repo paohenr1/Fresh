@@ -1,6 +1,10 @@
 // The browser collects inputs and displays responses. All finance stays in Python.
 const initial = JSON.parse(document.getElementById('initial-inputs').textContent);
 let state = structuredClone(initial);
+// Older saved inputs had fixed pensions; retain that behavior at 0%.
+for (const person of [state.client, state.spouse, initial.client, initial.spouse]) {
+  if (person && person.pension_indexation_percent === undefined) person.pension_indexation_percent = 0;
+}
 let spouseDraft = state.spouse && structuredClone(state.spouse);
 let version = 0;
 let timer;
@@ -28,6 +32,7 @@ document.querySelector('.action-row').prepend(reset);
 function blankSpouse() {
   // Empty fields require user input. Do not invent a spouse's financial assumptions.
   return {dob: '', retirement_age: null, plan_end: '', income: null, pension: null,
+    pension_indexation_percent: 0,
     cpp_percent: null, cpp_age: null, oas_percent: null, oas_deferral: null,
     accounts: Object.fromEntries(['Cash', 'RRSP', 'TFSA'].map(name => [name,
       {balance: null, contribution: null, indexation_percent: null}]))};
@@ -52,6 +57,13 @@ function setField(path, value) {
   const record = parts.reduce((value, name) => value[name], state);
   record[last] = value;
 }
+function updateIndexationLabels() {
+  aside.querySelectorAll('.indexation-edit').forEach(editor => {
+    const input = editor.querySelector('[data-input]');
+    editor.querySelector('summary').textContent = input.value !== '' && Number(input.value) !== 0
+      ? `Edit indexation · ${input.value}%/year` : 'Edit indexation';
+  });
+}
 function fillFields() {
   const values = {...state, spouse: state.spouse || spouseDraft || blankSpouse()};
   aside.querySelectorAll('[data-input]').forEach(input => {
@@ -60,6 +72,7 @@ function fillFields() {
   });
   updateSpouse();
   updateAgeDisplays();
+  updateIndexationLabels();
 }
 function updateSpouse() {
   const active = state.spouse !== null;
@@ -87,6 +100,7 @@ aside.addEventListener('input', event => {
   setField(input.dataset.input, value);
   if (state.spouse) spouseDraft = structuredClone(state.spouse);
   updateAgeDisplays();
+  updateIndexationLabels();
   // Keep the explanatory OAS age synchronized as well as the calculations.
   if (input.dataset.input.endsWith('.oas_deferral')) {
     const note = input.closest('[data-person]').querySelector('.field-note:last-of-type');

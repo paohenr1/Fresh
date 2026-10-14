@@ -2,7 +2,7 @@
   "as_of": "2026-10-08",
   "client": {
     "dob": "1961-06-15", "retirement_age": 65, "plan_end": "2030-12-31",
-    "income": 60000, "pension": 18000,
+    "income": 60000, "pension": 18000, "pension_indexation_percent": 0,
     "cpp_percent": 100, "cpp_age": 65, "oas_percent": 100, "oas_deferral": 0,
     "accounts": {
       "Cash": {"balance": 25000, "contribution": 2000, "indexation_percent": 0},
@@ -12,7 +12,7 @@
   },
   "spouse": {
     "dob": "1964-06-15", "retirement_age": 65, "plan_end": "2033-12-31",
-    "income": 50000, "pension": 15000,
+    "income": 50000, "pension": 15000, "pension_indexation_percent": 0,
     "cpp_percent": 80, "cpp_age": 65, "oas_percent": 100, "oas_deferral": 0,
     "accounts": {
       "Cash": {"balance": 10000, "contribution": 1000, "indexation_percent": 0},

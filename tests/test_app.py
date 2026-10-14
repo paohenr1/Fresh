@@ -59,6 +59,7 @@ class InteractivePlannerTests(unittest.TestCase):
     def test_changed_inputs_and_downloads_match_python(self):
         data = deepcopy(self.inputs)
         data['client']['income'] = 82000
+        data['client']['pension_indexation_percent'] = 2.5
         data['spouse']['accounts']['RRSP']['indexation_percent'] = 3.75
         data['retirement_return_percent'] = 0
         status, body = self.request(data)

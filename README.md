@@ -13,6 +13,8 @@ The Python verification workflow checks calculations, PDF routes and source pari
 
 This project reproduces the recovered FRESH calculation engine, with numeric
 annual indexation rates replacing the flat/inflation contribution switches.
+It also supports the approved extension of a separate annual pension indexation
+rate per person; 0% preserves the original fixed pension.
 It projects whether gross income and savings cover a gross retirement income
 target. Dollar amounts are CAD. Values are estimates, not guarantees.
 
@@ -195,8 +197,10 @@ defaults to 0 if omitted in a programmatically created Account or JSON account.
 `income` means original current gross annual income. It sets a 100% income
 replacement target, beginning with the first household retirement year. It is
 not a separately specified after-tax spending budget. `pension` means the
-expected nominal annual pension payable at that person's retirement; it stays
-fixed. Balances and contributions are nominal dollars at the projection base.
+expected nominal annual pension payable at that person's retirement.
+`pension_indexation_percent` sets its annual increase and defaults to 0 (flat),
+including when omitted from older JSON inputs. Balances and contributions are
+nominal dollars at the projection base.
 
 **All rate fields use percentage numbers:** `2.5` means 2.5%, `0` means 0%,
 `6` means 6%. Python converts a rate to a fractional multiplier by dividing by
@@ -218,8 +222,21 @@ for Indexed. General inflation still controls the income target, employment
 income, reference government benefits and purchasing-power conversion.
 Independent contribution rates do not alter those other calculations.
 
+Pension indexation is an intentional extension to the original fixed pensions:
+`pension in year = pension at retirement × (1 + pension_indexation_percent/100)^(year − retirement_year)`.
+The retirement year is t=0, with no immediate increase. For someone already
+retired at projection start, elapsed years since retirement are included: enter
+the retirement-year pension, rather than today's payment. Pension payments still
+stop after that person's plan-end year; no survivor pension is added.
+
+In the dashboard, each contribution and pension has a small **Edit indexation**
+control, matching **Edit date**. Its percentage input is collapsed initially.
+Nonzero rates appear beside the collapsed label. Opening or closing the control
+does not change its value or the calculations. All rates remain listed in the
+advisor PDF. General inflation remains separate from each item's rate.
+
 Rates below -100% are invalid; -100% gives the initial contribution in year 0
-and zero thereafter. Other finite contribution rates, including rates above
+and zero thereafter. The same limits apply to pension rates. Other finite indexation rates, including rates above
 100%, work if the result fits floating-point capacity. Returns retain the
 source range -100% to 100%; inflation retains -99% to 100%. Benefits and dates
 retain source limits. A plan-end year must follow that person's retirement year.

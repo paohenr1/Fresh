@@ -209,7 +209,8 @@ def _input_sections(s: Scenario, data: dict, width: float) -> list:
         label = 'Client' if index == 0 else 'Spouse'
         fields = [('Current age', age_on_date(person.dob, as_of)), ('Retirement age', person.retirement_age),
                   ('Age at plan end', age_on_date(person.dob, person.plan_end)), ('Current gross income', f'CAD {person.income:,}/year'),
-                  ('Fixed annual pension', f'CAD {person.pension:,}/year'),
+                  ('Annual pension at retirement', f'CAD {person.pension:,}/year'),
+                  ('Pension indexation', f'{person.pension_indexation_percent}% annually'),
                   ('CPP percentage of maximum', f'{person.cpp_percent}%'), ('CPP start age', person.cpp_age),
                   ('OAS percentage of maximum', f'{person.oas_percent}%'), ('OAS deferral years', person.oas_deferral)]
         accounts = [[name, f'${a.balance:,}', f'${a.contribution:,}', f'{a.indexation_percent}%']
@@ -217,7 +218,7 @@ def _input_sections(s: Scenario, data: dict, width: float) -> list:
         parts += [KeepTogether([_paragraph(label, 'SectionFresh'),
                                _table(label + ' personal inputs', ['Input', 'Value'], fields, width, numeric=False)]),
                   Spacer(1, 8), _table(label + ' accounts', ['Account', 'Starting balance\nCAD', 'Annual contribution\nCAD', 'Contribution\nincrease %/year'], accounts, width), Spacer(1, 16)]
-    parts.append(_paragraph('Percentage inputs use percentage numbers: 2.5 means 2.5%. Contributions increase by their own rates, independently of general inflation. The initial projection year is t = 0, with no immediate increase.', 'NoteFresh'))
+    parts.append(_paragraph('Percentage inputs use percentage numbers: 2.5 means 2.5%. Contribution and pension rates are independent of general inflation. Contributions use the projection start year as t = 0. Pensions use each person\'s retirement year as t = 0; increases start the following year, including elapsed retirement years for already-retired people. Collapsed dashboard fields remain active and are listed here.', 'NoteFresh'))
     parts.append(_paragraph('Current age is measured at scenario start; age at plan end uses the selected end date. The annual projection table shows ages reached during each calendar year.', 'NoteFresh'))
     return parts
 
@@ -264,7 +265,7 @@ def export_pdf(data: dict, kind: str = 'client', exported_at: datetime | None = 
             who = 'Client' if index == 0 else 'Spouse'
             facts += [(who + ' current age', age_on_date(person.dob, p.as_of)),
                       (who + ' plan', f'Retirement age {person.retirement_age}; age at plan end {age_on_date(person.dob, person.plan_end)}'),
-                      (who + ' pension', f'{_money(person.pension)}/year; fixed from retirement'),
+                      (who + ' pension', f'{_money(person.pension)}/year at retirement; {person.pension_indexation_percent}% annual indexation'),
                       (who + ' CPP / OAS', f'CPP {person.cpp_percent}% at age {person.cpp_age}; OAS {person.oas_percent}% deferred {person.oas_deferral} years')]
     story += [_table('Scenario at a glance', ['Assumption', 'Value'], facts, portrait_w, numeric=False), Spacer(1, 12),
               _paragraph('Displayed dashboard amounts are nominal CAD rounded to whole dollars. Values are estimates, not guarantees. This deterministic model excludes income taxes, OAS clawback, GIS, RRIF/LIF limits, fees, pension splitting and survivor benefits.', 'NoteFresh')]

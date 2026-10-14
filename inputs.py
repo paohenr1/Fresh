@@ -28,6 +28,7 @@ class Person:
     oas_percent: float
     oas_deferral: int
     accounts: dict[str, Account]
+    pension_indexation_percent: float = 0.0
 
     @property
     def retirement_year(self) -> int:
@@ -96,6 +97,8 @@ def validate(scenario: Scenario, as_of: date) -> None:
                 errors.append(f"{key}.plan_end: planning age cannot exceed 120")
         for name in ("income", "pension"):
             number(f"{key}.{name}", getattr(person, name), 0)
+        number(f"{key}.pension_indexation_percent", person.pension_indexation_percent,
+               -100, math.inf)
         number(f"{key}.cpp_percent", person.cpp_percent, 0, 100)
         number(f"{key}.oas_percent", person.oas_percent, 0, 100)
         number(f"{key}.cpp_age", person.cpp_age, 60, 70, True)
@@ -127,13 +130,16 @@ def scenario_from_dict(data: dict[str, Any]) -> Scenario:
                              f"unexpected {sorted(set(record) - expected)}")
 
     def person(record: dict[str, Any]) -> Person:
-        require_keys(record, {"dob", "retirement_age", "plan_end", "income", "pension",
+        # Legacy scenarios omitted this rate because pensions stayed flat.
+        record = {"pension_indexation_percent": 0.0, **record}
+        require_keys(record, {"dob", "retirement_age", "plan_end", "income", "pension", "pension_indexation_percent",
                               "cpp_percent", "cpp_age", "oas_percent", "oas_deferral", "accounts"}, "person")
         return Person(
             dob=date.fromisoformat(record["dob"]),
             retirement_age=record["retirement_age"],
             plan_end=date.fromisoformat(record["plan_end"]),
             income=record["income"], pension=record["pension"],
+            pension_indexation_percent=record["pension_indexation_percent"],
             cpp_percent=record["cpp_percent"], cpp_age=record["cpp_age"],
             oas_percent=record["oas_percent"], oas_deferral=record["oas_deferral"],
             accounts={name: Account(**account)

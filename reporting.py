@@ -200,6 +200,7 @@ def _sidebar(scenario: Scenario, as_of: date, interactive: bool = False) -> str:
                  "% of maximum OAS": "oas_percent", "OAS deferral years": "oas_deferral",
                  "Current balance": "balance", "Annual contribution": "contribution",
                  "Annual contribution increase": "indexation_percent",
+                 "Annual pension increase": "pension_indexation_percent",
                  "Return before retirement": "before_return_percent", "Return during retirement": "retirement_return_percent",
                  "Annual inflation": "inflation_percent", "Withdrawal order": "withdrawal_order"}
         name = names[label]
@@ -217,6 +218,14 @@ def _sidebar(scenario: Scenario, as_of: date, interactive: bool = False) -> str:
 
     def pair(first: str, second: str) -> str:
         return f'<div class="two-fields">{first}{second}</div>'
+
+    def indexation_editor(label: str, rate: float) -> str:
+        """Collapse only presentation; the rate remains part of the scenario."""
+        suffix = f' · {rate}%/year' if rate != 0 else ''
+        if not interactive:
+            return field(label, rate, suffix="%")
+        return (f'<details class="date-edit indexation-edit"><summary>Edit indexation{suffix}</summary>'
+                f'{field(label, rate, suffix="%")}</details>')
 
     def age_field(label: str, birthday: date, on: date, name: str, date_label: str, value: date) -> str:
         age = age_on_date(birthday, on)
@@ -247,12 +256,14 @@ def _sidebar(scenario: Scenario, as_of: date, interactive: bool = False) -> str:
             account = person.accounts[name]
             description = {"Cash": "Cash savings", "RRSP": "Retirement savings", "TFSA": "Tax-free savings"}[name]
             account_blocks.append(f'<div class="account-group"><div class="account-title"><i class="account-dot {name.lower()}"></i><h3>{name}</h3><span>{description}</span></div>' +
-                pair(field("Current balance", f"{account.balance:g}", "$"), field("Annual contribution", f"{account.contribution:g}", "$")) +
-                field("Annual contribution increase", account.indexation_percent, suffix="%") + '</div>')
+                pair(field("Current balance", f"{account.balance:g}", "$"),
+                     '<div>' + field("Annual contribution", f"{account.contribution:g}", "$") +
+                     indexation_editor("Annual contribution increase", account.indexation_percent) + '</div>') + '</div>')
         account_blocks.append('<p class="field-note">0% keeps contributions flat; 2.5% increases them by 2.5% each year. Separate from inflation and investment returns.</p>')
         accounts.append(panel(''.join(account_blocks) + '<p class="field-note">Contributions stop in your retirement year. Income isn’t automatically invested.</p>'))
         benefits.append(panel(field("Annual pension payable at retirement", f"{person.pension:g}", "$") +
-            '<p class="field-note">Starts at your retirement. Stays fixed; no inflation indexing or survivor pension.</p><div class="benefit-heading">CPP</div>' +
+            indexation_editor("Annual pension increase", person.pension_indexation_percent) +
+            '<p class="field-note pension-note">The entered pension is the retirement-year amount. Annual increases start the following year. No survivor pension is modeled.</p><div class="benefit-heading">CPP</div>' +
             pair(field("% of maximum CPP", person.cpp_percent, suffix="%"), field("CPP start age", person.cpp_age)) +
             '<div class="benefit-heading">OAS</div>' +
             pair(field("% of maximum OAS", person.oas_percent, suffix="%"), field("OAS deferral years", person.oas_deferral)) +
