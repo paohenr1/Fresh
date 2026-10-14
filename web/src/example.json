@@ -1,0 +1,70 @@
+{
+  "client": {
+    "dob": "1961-06-15",
+    "retirementAge": 65,
+    "planEnd": "2030-12-31",
+    "income": 60000,
+    "pension": 18000,
+    "cppPercent": 100,
+    "cppAge": 65,
+    "oasPercent": 100,
+    "oasDeferral": 0,
+    "accounts": {
+      "Cash": {
+        "balance": 25000,
+        "contribution": 2000,
+        "indexationPercent": 0
+      },
+      "RRSP": {
+        "balance": 220000,
+        "contribution": 12000,
+        "indexationPercent": 2.5
+      },
+      "TFSA": {
+        "balance": 90000,
+        "contribution": 6000,
+        "indexationPercent": 1
+      }
+    },
+    "pensionIndexationPercent": 0
+  },
+  "spouse": {
+    "dob": "1964-06-15",
+    "retirementAge": 65,
+    "planEnd": "2033-12-31",
+    "income": 50000,
+    "pension": 15000,
+    "cppPercent": 80,
+    "cppAge": 65,
+    "oasPercent": 100,
+    "oasDeferral": 0,
+    "accounts": {
+      "Cash": {
+        "balance": 10000,
+        "contribution": 1000,
+        "indexationPercent": 0
+      },
+      "RRSP": {
+        "balance": 100000,
+        "contribution": 5000,
+        "indexationPercent": 2.5
+      },
+      "TFSA": {
+        "balance": 50000,
+        "contribution": 3000,
+        "indexationPercent": 1
+      }
+    },
+    "pensionIndexationPercent": 0
+  },
+  "hasSpouse": true,
+  "beforeReturn": 6,
+  "retirementReturn": 4,
+  "inflation": 2,
+  "order": [
+    "Cash",
+    "RRSP",
+    "TFSA"
+  ],
+  "asOf": "2026-10-08"
+}

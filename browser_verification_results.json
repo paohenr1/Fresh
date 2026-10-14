@@ -1,0 +1,207 @@
+{
+  "reference": "Python projection.py; deployed web/src/model.ts",
+  "tolerance": {
+    "relative": 1e-12,
+    "absolute_cad": 1e-08
+  },
+  "cases": [
+    {
+      "case": "zero indexation and retirement timing",
+      "result": "PASS",
+      "numeric_values_compared": 307,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "inflation-linked contributions",
+      "result": "PASS",
+      "numeric_values_compared": 307,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "zero returns and depletion",
+      "result": "PASS",
+      "numeric_values_compared": 307,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "negative returns",
+      "result": "PASS",
+      "numeric_values_compared": 307,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "custom withdrawal order",
+      "result": "PASS",
+      "numeric_values_compared": 307,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "partial retirement pro rata returns",
+      "result": "PASS",
+      "numeric_values_compared": 291,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "survivor transfer",
+      "result": "PASS",
+      "numeric_values_compared": 229,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "birthday benefits and inflation",
+      "result": "PASS",
+      "numeric_values_compared": 280,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "leap birthday",
+      "result": "PASS",
+      "numeric_values_compared": 307,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "later projection baseline",
+      "result": "PASS",
+      "numeric_values_compared": 226,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "shortage then funded years",
+      "result": "PASS",
+      "numeric_values_compared": 307,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "tiny shortfall threshold",
+      "result": "PASS",
+      "numeric_values_compared": 280,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "CPP age 60 OAS deferral 0",
+      "result": "PASS",
+      "numeric_values_compared": 280,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "CPP age 70 OAS deferral 5",
+      "result": "PASS",
+      "numeric_values_compared": 280,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "funded with zero savings",
+      "result": "PASS",
+      "numeric_values_compared": 280,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "original default 51-year single-person example",
+      "result": "PASS",
+      "numeric_values_compared": 1387,
+      "maximum_absolute_difference_cad": 2.3283064365386963e-10
+    },
+    {
+      "case": "original default 54-year spouse example",
+      "result": "PASS",
+      "numeric_values_compared": 1520,
+      "maximum_absolute_difference_cad": 9.313225746154785e-10
+    },
+    {
+      "case": "fictional household flat",
+      "result": "PASS",
+      "numeric_values_compared": 232,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "fictional household independent rates",
+      "result": "PASS",
+      "numeric_values_compared": 232,
+      "maximum_absolute_difference_cad": 5.820766091346741e-11
+    },
+    {
+      "case": "numeric indexation 2.5% versus 2% inflation",
+      "result": "PASS",
+      "numeric_values_compared": 307,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "numeric indexation -10% versus 2% inflation",
+      "result": "PASS",
+      "numeric_values_compared": 307,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "numeric indexation -100% versus 2% inflation",
+      "result": "PASS",
+      "numeric_values_compared": 307,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "numeric indexation 125% versus 2% inflation",
+      "result": "PASS",
+      "numeric_values_compared": 307,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "pension 0% already retired False",
+      "result": "PASS",
+      "numeric_values_compared": 232,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "pension 0% already retired True",
+      "result": "PASS",
+      "numeric_values_compared": 232,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "pension 2.5% already retired False",
+      "result": "PASS",
+      "numeric_values_compared": 232,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "pension 2.5% already retired True",
+      "result": "PASS",
+      "numeric_values_compared": 232,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "pension -10% already retired False",
+      "result": "PASS",
+      "numeric_values_compared": 232,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "pension -10% already retired True",
+      "result": "PASS",
+      "numeric_values_compared": 232,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "pension -100% already retired False",
+      "result": "PASS",
+      "numeric_values_compared": 232,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "pension -100% already retired True",
+      "result": "PASS",
+      "numeric_values_compared": 232,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "pension 125% already retired False",
+      "result": "PASS",
+      "numeric_values_compared": 232,
+      "maximum_absolute_difference_cad": 0.0
+    },
+    {
+      "case": "pension 125% already retired True",
+      "result": "PASS",
+      "numeric_values_compared": 232,
+      "maximum_absolute_difference_cad": 0.0
+    }
+  ]
+}

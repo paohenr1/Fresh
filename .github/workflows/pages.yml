@@ -1,4 +1,4 @@
-name: Preserve original Fresh website
+name: Publish verified browser planner
 
 on:
   push:
@@ -18,27 +18,36 @@ jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-      - name: Check out the backed-up browser application
+      - name: Check out current browser and Python models
         uses: actions/checkout@v4
-        with:
-          ref: codex/backup-main-2026-10-13
       - name: Set up Node
         uses: actions/setup-node@v4
         with:
           node-version: '24'
           cache: npm
+          cache-dependency-path: web/package-lock.json
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.14'
       - name: Install dependencies
-        run: npm ci
-      - name: Test original projection rules
-        run: npm test
-      - name: Build the original website
-        run: npm run build
+        run: npm ci --prefix web
+      - name: Compare browser calculations with Python
+        run: python tests/verify_browser.py
+      - name: Test browser projection rules
+        run: npm test --prefix web
+      - name: Install browser for interface verification
+        working-directory: web
+        run: npx playwright install --with-deps chromium
+      - name: Verify interface and both PDF downloads
+        run: npm run test:browser --prefix web
+      - name: Build updated website
+        run: npm run build --prefix web
         env:
           GITHUB_PAGES: 'true'
       - uses: actions/configure-pages@v5
       - uses: actions/upload-pages-artifact@v3
         with:
-          path: dist
+          path: web/dist
 
   deploy:
     needs: build
@@ -47,6 +56,6 @@ jobs:
       name: github-pages
       url: ${{ steps.deployment.outputs.page_url }}
     steps:
-      - name: Publish original website
+      - name: Publish updated planner
         id: deployment
         uses: actions/deploy-pages@v4

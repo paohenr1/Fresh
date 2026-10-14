@@ -1,4 +1,4 @@
-# FRESH in Python
+# FRESH — browser and Python planners
 
 This is the main version of [paohenr1/Fresh](https://github.com/paohenr1/Fresh).
 The previous browser application is preserved on the
@@ -6,9 +6,11 @@ The previous browser application is preserved on the
 at commit `b3368e7843ae9661916cc2ba4ce7f8cde125f300`.
 The older recovered source used for numerical parity remains in `original_fresh/`.
 
-The GitHub Pages workflow builds the backed-up browser application to preserve
-the existing public website. GitHub Pages cannot run this Python server: the
-Python planner runs locally with `app.py` until separate server hosting is set up.
+The updated browser planner in `web/` publishes to
+[the shareable GitHub Pages dashboard](https://paohenr1.github.io/Fresh/).
+It runs calculations and both PDF exports on the visitor's device, without
+a Python server or hosting account. The Python planner continues to run locally
+with `app.py`, using the same formulas and example inputs.
 The Python verification workflow checks calculations, PDF routes and source parity.
 
 This project reproduces the recovered FRESH calculation engine, with numeric
@@ -129,10 +131,42 @@ Files generated in the selected output directory:
   The standalone report is a snapshot; use `app.py` for
   editable inputs and the two PDF buttons.
 
-The Python program runs locally without sending financial inputs anywhere.
+The local Python program runs without sending financial inputs anywhere.
 Reports save the scenario and its results to disk; this deliberate local export
 differs from the original website's unsaved browser session. Example records are
 fictional and are not client information.
+
+## Sharing the browser planner
+
+Share https://paohenr1.github.io/Fresh/ to give someone a fresh, editable planner.
+Each visitor has a separate, unsaved scenario. Sharing the link does not include
+your edits; export a PDF to share your completed scenario. After the page loads,
+calculations and PDF downloads work without a network connection. The static
+site host may record ordinary page/asset requests, but financial inputs are not
+sent to a calculation server or stored remotely.
+
+For local browser development, run `npm ci --prefix web`, then
+`npm run dev --prefix web`. Build with `npm run build --prefix web`.
+`web/src/model.ts` is the browser calculation engine, `App.tsx` contains inputs
+and dashboard controls, `Charts.tsx` draws area graphs and annual tables, and
+`pdf.ts` generates client/advisor reports. `web/src/example.json` matches the
+Python example, including its stored scenario start date; reopening the planner
+does not advance that date or change birthdays automatically.
+
+The browser and Python engines use identical annual cash-flow timing, independent
+contribution/pension indexation percentages, and separate general inflation.
+`python tests/verify_browser.py` compares 33 scenarios, including every annual
+account reconciliation field. Results are recorded in
+`browser_verification_results.json`; maximum observed difference is below
+0.000000001 CAD. Browser whole-dollar display uses Python's ties-to-even rounding.
+Reports use the same labels and figures; Python uses vector PDF graphs while
+browser PDFs embed high-resolution images of the displayed graphs.
+
+The Pages workflow runs calculation comparisons, model tests, browser interaction
+tests and both PDF downloads before publishing `web/dist/`. The old browser
+version stays on the backup branch. `original_fresh/` remains untouched for
+original-source verification. Render hosting preparation was retained in the
+ignored local `backups/` folder and is not needed or published.
 
 ## How the files connect
 

@@ -344,7 +344,7 @@ def render_html(projection: Projection, scenario: Scenario, live_inputs: dict | 
         ("Contributions", f'{_money(sum(a.contribution for p in scenario.people for a in p.accounts.values()))}/year initially'),
         ("Withdrawal order", ' → '.join(scenario.withdrawal_order)),
         *[("Client plan" if i == 0 else "Spouse plan", f'Current age {age_on_date(p.dob, projection.as_of)} · retirement age {p.retirement_age} · age at plan end {age_on_date(p.dob, p.plan_end)}') for i, p in enumerate(scenario.people)],
-        ("Pension", "Fixed annual payment from each person’s retirement"),
+        ("Pension", "Retirement-year payment, increased by each person’s pension indexation rate"),
     ]
     gap = projection.first_shortfall
     detail = (f'Your first unfunded year is <strong>{gap.year}</strong>, with a gap of {_money(gap.shortage)}.' if gap else
