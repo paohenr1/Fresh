@@ -1,109 +1,110 @@
-# Verification of the Python port
+# Calculation and interface verification
 
-## Retirement surplus saving - October 14, 2026
+## Repository cleanup verification — October 14, 2026
 
-The approved rule adds net household income above the target to Cash once
-either person retires, before growth. Positive personal income excesses determine
-allocation; each Cash owner retains their existing return rate. No extra annual
-output column is added and entered contributions are not relabeled as surplus.
-CPP/OAS may still begin at their selected ages before retirement.
+After documentation reorganization and browser source formatting, all 41 Python
+tests, 24 browser model tests, 5 browser interaction/PDF tests, 23 original-source
+comparisons and 36 browser/Python comparisons passed. The production browser
+build and `planner.js` syntax check passed. Both example file-export commands,
+including an explicit starting-date override, completed successfully.
 
-41 Python tests and 24 browser model tests pass. 36 browser/Python comparisons
-include surplus accumulation, personal allocation during partial retirement,
-different owner return regimes, subsequent asset depletion, and reconciliation.
-Maximum numerical difference is 9.31322574615e-10 CAD. The 23 original-source
-comparisons pass with an explicitly labeled in-memory surplus extension where
-necessary; their final-balance differences from the legacy model are recorded
-as intentional changes in `verification_results.json`. Cases without surplus
-retain their previous comparison. The original reference files remain unchanged.
+Formatting the backed-up browser source produced the same cleaned source, with
+only the documented removal of unused CSS rules and one comment update.
+All reference files, Python financial calculation code, dependencies and numeric
+comparison records retained their pre-cleanup SHA-256 hashes. Local documentation
+links were checked. The build still reports a bundle larger than 500 kB; no
+loading or dependency changes were made. A new clean-machine installation and
+external deployment were not performed for this cleanup.
 
-Earlier verification sections below are historical. Current dashboards and
-their PDF exports use nominal CAD, with no dollar-basis selector.
+## Audit and verification
 
-## Simplified advisor export - October 13, 2026
-
-The advisor report now includes every input, five summary boxes, both graphs
-and only the compact dashboard annual table. Extra audit/reconciliation tables
-are omitted. The example is now 5 pages (previously 10), and the annual table
-follows the dashboard's nominal/today's-dollar selection. All 25 existing tests
-passed. All five example pages were rendered and visually inspected; separate
-checks verified today's-dollar values and the final year of a long individual
-plan. Earlier full-audit report checks below are historical.
-
-## Dashboard and PDF update - October 13, 2026
-
-Added the Current savings card and separate client/advisor PDF exports. The
-pre-change project backup is in `backups/`, with an SHA-256 manifest. All 25
-calculation and HTTP tests passed using `.venv/Scripts/python.exe -m unittest
-discover -v`. The HTTP tests cover both PDF routes and rejection of invalid
-export inputs. ReportLab 4.5.1 is installed in the project environment.
-
-The example client PDF has 3 pages; the advisor PDF has 10. PDF pages were
-rendered with Poppler and visually inspected. Additional checks cover edited
-balances, high-precision contribution rates, a 30-year single-person projection
-and asset depletion. Parsed PDF text confirms complete inputs, the final
-projection year, page totals, and correctly labelled nominal/today's-dollar
-sections. Results are in `pdf_verification_results.json`. This update does not
-change the financial calculation engine. Export timestamp labels use UTC.
-
-## Original calculation comparison
-
-Verified locally with Python 3.14.8 and Node.js 24.21.0 against FRESH commit
-`a0623571bd85c0c75c284efe4ba4dee550db8d9b`.
-
-Commands:
+Each account satisfies, apart from floating-point roundoff:
 
 ```text
-python -m unittest discover -v
-python tests/verify_original.py
-python main.py
+closing = opening + contribution + saved retirement-income surplus − withdrawal + investment return
+retirement funding gap = investment draw + raw unmet spending
 ```
 
-18 Python test methods passed, including parameterized invalid-input checks.
-23 source comparison cases passed: 18 against the original engine unchanged,
-5 against a separate copy with only the authorized indexation expression changed.
-Detailed counts, row counts and maximum numerical differences appear in
-`verification_results.json`.
+Only Cash receives the saved surplus. It can be derived from existing income
+fields as `max(0, employment + pension + CPP + OAS − target)` in retirement
+years, and is zero before either person retires. No surplus column or separate
+annual output field is added; entered contribution fields retain their meaning.
 
-Coverage includes zero/positive/negative indexation, contribution growth unequal
-to inflation, 0 returns, negative returns, depletion, ordered withdrawals,
-proportional spouse withdrawals, separate retirement dates and returns, survivor
-transfers, CPP early/late start, OAS deferral, exact days, leap birthdays, benefits
-beginning before retirement, a projection beginning after the reference year,
-first shortage followed by later fully funded years, zero-asset funded scenarios,
-invalid inputs and per-account annual balance reconciliation.
+CSV and JSON suffixes `_nominal_cad` and `_today_cad` identify the units. Today's
+values use the opening year's purchasing power and exponent `year − start_year`
+for all amounts in a row, including closing balances. This is a year-labeled
+reporting convention; it does **not** apply an additional year's inflation to
+December 31 balances. A future exact-date valuation could use a different
+deflator, but it would need to be labeled as a timing change.
 
-For unchanged-model cases all original output fields were compared, including
-annual contribution, income, draw, shortage, balances, ages and summary metrics.
-16 scenarios matched exactly. The 51-year and 54-year original default scenarios
-differed by at most 2.3283064365386963e-10 and 9.313225746154785e-10 CAD respectively.
-For the numeric-rate extension the largest absolute difference was
-5.820766091346741e-11 CAD in the fictional spouse scenario. This comes from
-floating-point exponentiation/roundoff between runtimes; calculation timing and
-financial assumptions were preserved. Display differences (whole dollars in
-the website versus cents in HTML and full precision in data exports) are
-presentation choices only.
+`spending_target` is FRESH's gross income target; unmet spending is its unfunded
+portion. There is no tax column because the source calculates no taxes. The
+original tiny-shortfall convention treats raw gaps below CAD 0.000001 as zero.
+`raw_unmet_spending` makes those small remainders visible. No materially negative
+account balance or asset overdraft is allowed. Reports do not round inside the
+engine; binary floating-point follows the source's Number arithmetic.
 
-The example ran successfully and wrote all three reports. Its 2026 opening
-balance is CAD 495,000; closing balance is 499,080.0456621004. Its 2033 final
-balance is 512,320.55416591745 nominal / 446,005.87314226036 in 2026 dollars.
+Run `python -m unittest discover -v` for hand-calculated and invariant checks.
+To execute the recovered TypeScript engine as the reference, also install Node.js
+22.18+ or 24+ and run:
 
-These tests establish parity for the covered scenarios and arithmetic
-reconciliation. They do not validate the economic assumptions or government
-reference values against current regulations, and they are not exhaustive over
-all possible inputs. No workbook was available in the recovered repository.
-The original browser UI/PDF tests were inspected but not rerun, since this port
-does not change or rebuild that UI.
-# Interactive planner verification — October 8, 2026
+```text
+python tests/verify_original.py
+```
 
-The local planner added in `app.py` uses the existing Python calculation engine.
-All 23 tests passed (`python -m unittest discover -v`): the original 18 calculation
-tests and five HTTP interface tests. The new tests cover editable input markup,
-changed financial inputs matching direct Python results, current CSV/JSON data,
-invalid inputs without stale results, spouse exclusion, zero contribution
-indexation, and rejection of requests from an unrelated website. JavaScript
-syntax checks also passed. These are automated code/API checks, not a completed
-visual browser review.
+No npm installation is needed: Node can run the source TypeScript after removing
+type annotations. This command reads the unchanged `original_fresh/src/model.ts`,
+compares every original annual field and summary metric, and writes
+`verification_results.json`. It does not push changes or query financial services.
 
-The earlier numerical source-comparison results below remain a record of the
-calculation engine verification; this interface change adds no financial formulas.
+The original source cannot accept a rate different from 0/inflation. Those cases
+use a separately loaded copy with the contribution expression replaced.
+Cases with retirement income above the target also require an in-memory
+surplus-saving extension of the old source. Neither extension edits
+`original_fresh/`. Cases without surplus compare all original fields unchanged;
+cases with surplus explicitly report their intentional difference in final
+savings from the old behavior. This is an intentional change, not roundoff or a fix.
+Independent hand-calculated tests check saving, growth, partial-retirement
+allocation, subsequent withdrawal/depletion and survivor years.
+
+Current results: **41 Python tests, 24 browser model tests and 36 browser/Python
+comparison scenarios passed**. The 23 original-source/extension comparisons also
+passed. Floating-point differences in equivalent calculations remain below
+CAD 0.000000001. Comparison tolerance is absolute CAD 1e-8 or relative 1e-12.
+Cash reconciliation includes the derived saved surplus; no surplus column is
+added, and contribution fields still contain only entered contributions.
+See [original-source comparison results](verification_results.json) and
+[browser/Python results](browser_verification_results.json) for reproducible evidence and limitations.
+
+
+## Browser checks
+
+Use Node.js 24 or newer for the reference comparisons and browser development.
+Install browser dependencies from the repository root with `npm ci --prefix web`.
+
+```text
+.venv\Scripts\python.exe -m unittest discover -s tests -v
+.venv\Scripts\python.exe tests/verify_original.py
+.venv\Scripts\python.exe tests/verify_browser.py
+npm test --prefix web
+npm run build --prefix web
+npm run test:browser --prefix web
+node --check planner.js
+```
+
+Windows browser tests require installed Microsoft Edge. The current Playwright
+configuration uses Edge outside CI; CI installs Chromium on Linux. A missing
+browser is an unmet prerequisite, not a passing test. The browser tests cover
+editable inputs, invalid-result handling, nominal tables, PDF downloads,
+long reports, surplus saving and mobile layout. They use a local test server.
+
+The comparison scripts regenerate the two tracked numeric-result JSON files.
+Generated reports and browser test artifacts belong in ignored `output/`,
+`tmp/`, `web/test-results/` and `web/playwright-report/` directories.
+
+These checks establish arithmetic agreement for the covered cases. They do not
+certify government reference amounts, validate economic assumptions, or test all
+possible inputs. The recovered reference UI is not rebuilt or changed.
+
+See [historical verification](docs/verification-history.md) for earlier interface
+and PDF checks. Historical counts and report layouts are not current results.

@@ -112,7 +112,7 @@ def main() -> None:
     except (OSError, ValueError, TypeError, KeyError) as error:
         parser.exit(2, f'FRESH: {error}\n')
     print(f'FRESH planner: http://127.0.0.1:{server.server_port}', flush=True)
-    print('Keep this terminal open. Press Ctrl+C to stop. Download your scenario to save edits.', flush=True)
+    print('Keep this terminal open. Press Ctrl+C to stop. Export an advisor PDF to keep a record of your inputs and results.', flush=True)
     try:
         server.serve_forever()
     except KeyboardInterrupt:

@@ -1,13 +1,13 @@
 # Source review before the Python implementation
 
 Source recovered from `https://github.com/paohenr1/Fresh`, commit
-`a0623571bd85c0c75c284efe4ba4dee550db8d9b` (the published cloud build).
+`a0623571bd85c0c75c284efe4ba4dee550db8d9b` (the recovered reference build).
 The unchanged checkout is retained in `original_fresh/` for inspection and comparison.
 Reviewed `src/model.ts`, `src/model.test.ts`, `src/App.tsx`, `src/Charts.tsx`,
 `src/pdf.ts`, `README.md`, and `docs/specification.md`. No Excel workbook or
 spreadsheet formulas exist in this source. Its formulas are TypeScript functions.
 
-## What the current model calculates
+## What the recovered original model calculates
 
 A deterministic Canadian-dollar household projection from the opening calendar
 year through the latest plan-end year, inclusive. It uses independent retirement
@@ -43,9 +43,9 @@ browser-generated PDF present these results.
 
 ## Ambiguities, limitations, and potential errors
 
-The reviewed specification resolves the earlier cloud conversation's timing
-ambiguities. Where earlier discussion differs, this port follows the final
-specification and the implemented engine together.
+This review describes the recovered engine and its specification. The Python
+and current browser versions preserve this baseline except for the intentional
+extensions documented below.
 
 | Issue | Source behavior | Treatment in Python |
 |---|---|---|
@@ -60,21 +60,22 @@ specification and the implemented engine together.
 | Income chart | Working salary excluded even though it funds the target | Preserved with explicit explanation |
 | Gross target | 100% of current gross income; working contributions are not deducted from available income | Preserved; no after-tax spending inference |
 | Benefit reference values | Supplied fixed 2026 figures, extrapolated with inflation | Preserved without asserting these are current legal entitlements |
-| Surplus income | Not added to accounts | Approved extension: after either person retires, income above the household target enters Cash before growth; no extra annual column |
+| Surplus income | Not added to accounts | Intentional extension: after either person retires, income above the household target enters Cash before growth; no extra annual column |
 | Extreme values | Finite inputs can overflow during compounding | Python rejects unrepresentable results explicitly |
 | Balance audit | Original has no opening/growth/account-draw columns | Add them without changing the calculation |
-| Display precision | Original money displays whole dollars | Python CSV/JSON retain precision; HTML rounds to cents |
+| Display precision | Original money displays whole dollars | Python CSV/JSON retain precision; dashboard, HTML and PDFs display whole dollars |
 
-### Approved pension extension
+### Intentional pension-indexation extension
 
 Pensions now have a separate annual percentage per person, defaulting to 0.
 The entered amount is payable in the retirement year (t=0); increases begin the
 following year, including elapsed retirement years for already-retired people.
 This is an intentional new assumption input, not a correction to the original.
-At 0%, original-model comparisons remain unchanged. Collapsed Edit indexation
+At 0%, pension payments match the original fixed pension. Surplus-saving
+cases still require the separate extension described below. Collapsed Edit indexation
 controls affect visibility only, and advisor PDFs list every rate.
 
-### Approved retirement-surplus saving
+### Intentional retirement-surplus saving
 
 Once either person retires, household employment, pension, CPP and OAS above
 the household target are saved into Cash before growth. A person's positive
@@ -100,5 +101,6 @@ Future options requiring an explicit financial specification: after-tax cash
 flows, RRIF/LIF rules, clawbacks, contribution limits, fees, actual survivor
 entitlements, spending patterns, cash-flow budgets, variable returns or
 Monte Carlo simulations. No such features exist in the source engine, and none
-were added. A future interface could restore its dedicated styled PDF exporter;
-this version produces a local printable HTML report instead.
+were added. Both current interfaces provide client and advisor PDF exports;
+Python also generates a standalone HTML snapshot. The advisor report includes
+inputs and the dashboard annual table, without separate audit tables.
