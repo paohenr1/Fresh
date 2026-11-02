@@ -1,147 +1,149 @@
-# Running and exporting FRESH
+# Using FRESH and exporting results
 
-Run commands from the repository root.
+## Use the browser planner
 
-## Run the fictional example
+Open the [browser planner](https://paohenr1.github.io/Fresh/). Use You/Spouse to
+edit each person's inputs and Include spouse to change household composition.
+Valid input changes recalculate the graphs, summary and annual table. Invalid or
+incomplete inputs hide outdated results and disable PDF export until corrected.
+Reset example restores the example inputs.
 
-For the **editable planner**, run `python app.py` in this folder (or double-click
-`Start FRESH.cmd` on Windows), then open `http://127.0.0.1:8765`. Keep the terminal
-open while using the planner. Change any input to recalculate the graphs,
-summary and annual table through Python. Contribution increases are editable
-percentages: 0 means flat; 2.5 means 2.5% annually. The example's different rates
-are fictional demonstration inputs, not recommendations.
+Rates are percentage numbers: `2.5` means 2.5% annually, and `0` means no annual
+increase. Contribution and pension indexation are independent of general
+inflation. Expand Edit indexation to change a rate; collapsing the control does
+not change its value. See the [model guide](model.md) for timing and input units.
+The example values are fictional, not recommendations.
 
-Use You/Spouse to edit each person, Include spouse to change household composition,
-and Reset example to restore the loaded inputs. Export the advisor PDF to keep
-a record of your edited inputs and results. Reopening or refreshing starts with
-the file originally loaded. CSV and JSON buttons are omitted from the dashboard;
-`python main.py` still generates those files. Previously saved scenario JSON can
-be reopened with `python app.py path/to/projection.json`.
-Invalid or incomplete inputs hide outdated results and disable PDF exports until
-corrected. The starting date remains stored as `as_of` in the scenario file and
-does not advance automatically; it is no longer shown as a dashboard/PDF field.
+### Scenarios and projection dates
 
-`output/report.html` remains an exported snapshot. Use the local planner address
-above when you want to change numbers. `python main.py` generates file exports.
+Each visitor starts with a separate, unsaved scenario. Refreshing discards edits;
+sharing the website link does not include them. Export a PDF to share a completed
+scenario. The advisor PDF includes all inputs as well as results.
 
-Use Python 3.11 or newer. The calculation engine and CSV/JSON exports use the
-standard library. PDF export uses ReportLab, listed in `requirements.txt`.
-On a new installation, set up the project environment once:
+The example's projection start is fixed at October 8, 2026. Reopening the planner
+does not advance that date. Current age and the initial year follow the stored
+scenario date, not the computer's date. Edit date controls retain exact birth
+and plan-end dates. The projection date is not an editable dashboard field and
+is not printed in the PDFs; their export timestamps are not the projection date.
+Use the local scenario workflow below to set a different starting date.
+
+## Read the dashboard
+
+| Metric | Meaning |
+|---|---|
+| Current savings | Combined opening Cash, RRSP and TFSA balances, before projected contributions, withdrawals or growth |
+| Savings at retirement | Opening household savings in the first retirement year, before that year's cash flows and growth |
+| Balance at plan end | Total savings after growth in the final projection year |
+| Years covered | Number of fully funded retirement years; later funded years do not erase an earlier shortage |
+| Annual income target | Gross target in the initial retirement year; later targets follow general inflation |
+
+For already-retired households, Savings at projection start replaces the
+retirement-balance label; the planner does not reconstruct past balances.
+Individual retirement and plan-end cards show ages attained in those years;
+household cards show calendar years. On narrow screens, the summary strip
+scrolls horizontally.
+
+Dashboard tables and PDFs display nominal CAD rounded to whole dollars. CSV and
+JSON retain full precision and also include values in the starting year's
+purchasing power. Working employment income counts toward funding during
+partial retirement but is excluded from the income chart. Consult the
+[model assumptions](model.md) when interpreting the charts and funding gaps.
+
+## Export PDFs
+
+| Export | Contents |
+|---|---|
+| Client PDF | Summary metrics, scenario overview, both graphs and the compact annual projection table |
+| Advisor PDF | The same dashboard and annual table, plus every person-specific input and shared assumption, including collapsed indexation inputs |
+
+Both exports use the latest valid scenario and include all projection years.
+They do not include separate account-reconciliation tables. While calculations
+are updating or inputs are invalid, export is disabled. Inputs are briefly
+locked during export to keep the downloaded record consistent.
+
+PDF dates are labelled, and export timestamps use UTC. Both reports display
+Current age and Age at plan end. Keep the scenario's projection date with any
+PDF used as a record, because the export timestamp alone does not identify it.
+
+## Run the local Python planner
+
+Run commands from the repository root. Use Python 3.11 or newer. The calculation
+engine and CSV/JSON exports use the standard library; PDF export requires
+ReportLab from `requirements.txt`.
+
+On Windows, create the environment and install dependencies once:
 
 ```text
 python -m venv .venv
 .venv\Scripts\python.exe -m pip install -r requirements.txt
+.venv\Scripts\python.exe app.py
 ```
 
-Then double-click `Start FRESH.cmd`, or run `.venv\Scripts\python.exe app.py`.
-The launcher uses this environment when it exists. Keep the terminal open and
-open the address it prints in your browser.
+Open `http://127.0.0.1:8765/` and keep the terminal running. After setup, you can
+also double-click `Start FRESH.cmd`; the launcher uses `.venv` when it exists.
+On Windows, `py -3` can replace `python` when creating the environment. Quote
+paths containing spaces.
 
-The dashboard now starts with **Current savings**, the combined starting Cash,
-RRSP and TFSA balances for the people included in the scenario. It is the value
-before projected contributions, withdrawals and investment growth.
+The local dashboard is editable. Refreshing returns to the loaded file, so edits
+are not saved automatically. Reset example restores the loaded inputs. Export
+an advisor PDF to retain edited inputs and results.
 
-The summary uses five white boxes with blue values in one horizontal row. Labels
-are shared by the dashboard and both PDF exports: Current savings, Savings at
-retirement, Balance at plan end, Years covered, and Annual income target. For an
-initial-balance card, Current savings shows the projection's starting year, such
-as Current savings · 2026. This follows the selected projection date, not the
-computer's current calendar year. For an
-individual plan the retirement/end cards show ages attained in those years; for
-a household they show years to avoid mixing people's ages. Already-retired plans
-retain the accurate Savings at projection start label. The annual income target
-is the initial retirement-year amount; later targets follow general inflation.
-On narrow screens the summary strip scrolls horizontally. Exported JSON keys
-remain stable for existing users of the data.
+### Load a scenario or change its date
 
-Two buttons download PDFs from the editable planner:
+Copy `examples/fictional.json` into the ignored `output/` directory and edit its
+fields, including `as_of` to set the projection date. Update incomes, balances
+and contributions to the intended starting date as well. The [model guide](model.md)
+describes the input fields and validation rules.
 
-- **Export client PDF:** the five summary cards, scenario overview, both area
-  graphs and the original compact nominal annual projection.
-- **Export advisor PDF:** the same dashboard, every client/spouse input and shared
-  assumption, both graphs, and the same compact year-by-year table shown on the
-  dashboard. Dashboard tables and both PDF exports use nominal CAD.
-  Collapsed inputs and all projection years are included automatically; additional
-  audit and account reconciliation tables are omitted.
-  The dashboard and both PDFs consistently display Current age and Age at plan end.
-  Current age uses the scenario's stored starting date. The dashboard's Edit date
-  controls retain exact birth/end dates for accurate benefit timing. Neither PDF
-  displays the projection date; each retains its export timestamp.
-
-Both export the latest valid scenario. While calculations are updating or inputs
-are invalid, PDF exports are disabled. Inputs are briefly locked during export
-to keep the screen and downloaded record consistent. Dates are labelled explicitly;
-export timestamps are in UTC. Summary cards use whole-dollar display rounding;
-annual tables use the dashboard's whole-dollar display, while CSV/JSON retain
-full precision. Exports
-are generated locally without writing client inputs to the project folder.
-
-From this project folder, in PowerShell or another terminal:
+Load a scenario with:
 
 ```text
-python main.py
-python main.py examples/fictional.json --output output
-python main.py examples/fictional.json --as-of 2028-10-08 --output output/2028
-python -m unittest discover -v
+.venv\Scripts\python.exe app.py output/my-scenario.json
 ```
 
-On Windows, `py -3` can replace `python` if that is how your interpreter is
-installed. Paths containing spaces must be quoted. The default example is pinned
-to October 8, 2026; a later run does not silently change the projection date.
-Use `--as-of` to deliberately change it. Changing this date changes the income
-and contribution base year, so use appropriately updated inputs too.
+A saved `projection.json` generated by the command-line interface can also be
+reopened this way. Changing the projection date changes the income and
+contribution base year; it is not simply a display setting.
 
-Files generated in the selected output directory:
+### Generate CSV, JSON and HTML
 
-- `annual.csv`: complete annual table with household and account reconciliation
-  fields; useful in Excel without needing Excel for calculation.
-- `projection.json`: effective inputs, summary metrics, and structured annual
-  table; unrounded numeric values for programmatic reuse.
-- `report.html`: standalone report using the original FRESH stylesheet and
-  two-column layout, summary metrics, and continuous stacked area graphs.
-  Hover over a graph for annual values (or focus it and use the arrow keys).
-  The sidebar shows saved inputs; the You/Spouse buttons switch whose inputs
-  are displayed. Expand the annual table to see the nominal CAD projection.
-  Like the original website, displayed amounts round to whole dollars; CSV
-  and JSON files generated by `main.py` retain full precision and all audit fields.
-  The standalone report is a snapshot; use `app.py` for
-  editable inputs and the two PDF buttons.
+```text
+.venv\Scripts\python.exe main.py examples/fictional.json --output output
+.venv\Scripts\python.exe main.py examples/fictional.json --as-of 2028-10-08 --output output/2028
+```
 
-The local Python program runs without sending financial inputs anywhere.
-Reports save the scenario and its results to disk; this deliberate local export
-differs from the original website's unsaved browser session. Example records are
-fictional and are not client information.
+The second command demonstrates a deliberate date override; use appropriately
+updated inputs for a real scenario. The date does not change automatically.
 
+| File | Contents |
+|---|---|
+| `annual.csv` | Full annual table, including household and account reconciliation fields |
+| `projection.json` | Effective inputs, summary metrics and unrounded annual results |
+| `report.html` | Standalone, offline snapshot with saved inputs, summary metrics, graphs and an expandable nominal annual table |
 
-## Sharing the browser planner
+The HTML report is a snapshot, not an editable planner. Hover over a graph for
+annual values, or focus it and use the arrow keys. Use `app.py` to change inputs
+interactively. CSV and JSON are command-line exports, not dashboard buttons.
+Keep private scenarios and generated files in ignored `output/` directories.
 
-Share https://paohenr1.github.io/Fresh/ to give someone a fresh, editable planner.
-Each visitor has a separate, unsaved scenario. Sharing the link does not include
-your edits; export a PDF to share your completed scenario. After the page loads,
-calculations and PDF downloads work without a network connection. The static
-site host may record ordinary page/asset requests, but financial inputs are not
-sent to a calculation server or stored remotely.
+## Privacy and sharing
 
-For local browser development, run `npm ci --prefix web`, then
-`npm run dev --prefix web`. Build with `npm run build --prefix web`.
-`web/src/model.ts` is the browser calculation engine, `App.tsx` contains inputs
-and dashboard controls, `Charts.tsx` draws area graphs and annual tables, and
-`pdf.ts` generates client/advisor reports. `web/src/example.json` matches the
-Python example, including its stored scenario start date; reopening the planner
-does not advance that date or change birthdays automatically.
+Browser calculations and PDF generation run on the visitor's device. After the
+page loads, calculations and PDF downloads work without a network connection.
+Financial inputs are not sent to a calculation server or stored remotely. The
+static site host may record ordinary page and asset requests.
 
-The browser and Python engines use identical annual cash-flow timing, independent
-contribution/pension indexation percentages, and separate general inflation.
-`python tests/verify_browser.py` compares 36 scenarios, including every annual
-account reconciliation field. Results are recorded in
-`browser_verification_results.json`; maximum observed difference is below
-0.000000001 CAD. Browser whole-dollar display uses Python's ties-to-even rounding.
-Reports use the same labels and figures; Python uses vector PDF graphs while
-browser PDFs embed high-resolution images of the displayed graphs.
+The local Python planner serves the interface on the local computer and does
+not send financial inputs to an external service. File exports deliberately
+save inputs and results to disk; downloaded PDFs also contain scenario details.
+Check their contents before sharing them. Example records are fictional.
 
-The Pages workflow runs calculation comparisons, model tests, browser interaction
-tests and both PDF downloads before publishing `web/dist/`. The old browser
-version stays on the backup branch. `original_fresh/` remains untouched for
-original-source verification.
+## Developer references
+
+See [code structure and development](development.md) for the Python engine,
+[browser development](../web/README.md) for frontend commands, and
+[verification](../VERIFICATION.md) for cross-language and interface checks.
+Historical implementations are described separately in
+[source provenance](provenance.md).
 
 [Back to the README](../README.md).
