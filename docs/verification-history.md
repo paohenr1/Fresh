@@ -1,115 +1,120 @@
 # Historical verification records
 
-These are dated development results, not current test counts or current PDF
-layouts. The original raw test log and PDF checklist are preserved locally in
-ignored `backups/repo-clean-2026-10-14/`; Git history also retains the original
-tracked records. For current commands and results, see [verification](../VERIFICATION.md).
+These records describe earlier development checks. Test counts, report layouts
+and environment versions belong to the versions tested, not necessarily a new
+checkout. Use the [verification guide](../VERIFICATION.md) for reproducible
+commands and the [usage guide](usage.md) for the current interface.
 
-# Verification of the Python port
+The [October 14, 2026 documentation snapshot](https://github.com/paohenr1/Fresh/blob/8b7d9e7396444771433cdf777f00a83ec012bbed/docs/verification-history.md)
+retains the earlier detailed record. Historical visual-inspection statements below
+are reported observations, not fresh browser checks or publicly attached image
+artifacts. Tracked numerical comparison files provide separate, inspectable
+evidence for the scenarios they cover.
 
-## Retirement surplus saving - October 14, 2026
+## October 14, 2026: documentation and source-formatting checks
 
-The approved rule adds net household income above the target to Cash once
-either person retires, before growth. Positive personal income excesses determine
-allocation; each Cash owner retains their existing return rate. No extra annual
-output column is added and entered contributions are not relabeled as surplus.
-CPP/OAS may still begin at their selected ages before retirement.
+The recorded cleanup run passed 41 Python tests, 24 browser model tests,
+5 browser interaction/PDF tests, 23 original-source comparisons and
+36 browser/Python comparisons. The browser build, JavaScript syntax check,
+example exports and local documentation-link checks also passed.
 
-41 Python tests and 24 browser model tests pass. 36 browser/Python comparisons
-include surplus accumulation, personal allocation during partial retirement,
-different owner return regimes, subsequent asset depletion, and reconciliation.
-Maximum numerical difference is 9.31322574615e-10 CAD. The 23 original-source
-comparisons pass with an explicitly labeled in-memory surplus extension where
-necessary; their final-balance differences from the legacy model are recorded
-as intentional changes in `verification_results.json`. Cases without surplus
-retain their previous comparison. The original reference files remain unchanged.
+The record reports unchanged hashes for reference files, Python calculation
+code, dependencies and numerical comparison records. The browser build retained
+its warning about a bundle larger than 500 kB. A new clean-machine installation
+and external deployment were not performed as part of that run.
 
-Earlier verification sections below are historical. Current dashboards and
-their PDF exports use nominal CAD, with no dollar-basis selector.
+## October 14, 2026: retirement-income surplus saving
 
-## Simplified advisor export - October 13, 2026
+Net household income above the target is added to Cash after either person
+retires, before growth. Positive personal income excesses determine allocation,
+and each Cash account retains its owner's return rate. Entered contributions
+remain distinct from saved surplus; no additional annual column was added.
+CPP/OAS can still begin at selected ages before retirement.
 
-The advisor report now includes every input, five summary boxes, both graphs
-and only the compact dashboard annual table. Extra audit/reconciliation tables
-are omitted. The example is now 5 pages (previously 10), and the annual table
-follows the dashboard's nominal/today's-dollar selection. All 25 existing tests
-passed. All five example pages were rendered and visually inspected; separate
-checks verified today's-dollar values and the final year of a long individual
-plan. Earlier full-audit report checks below are historical.
+The recorded run passed 41 Python tests, 24 browser model tests and 36
+browser/Python comparisons, including surplus accumulation, partial-retirement
+allocation, different owner return regimes, subsequent depletion and
+reconciliation. The maximum numerical difference was 9.31322574615e-10 CAD.
 
-## Dashboard and PDF update - October 13, 2026
+The 23 original-source comparisons passed with a labelled in-memory surplus
+extension where necessary. Intentional final-balance differences from the
+legacy behavior are recorded in `verification_results.json`; cases without
+surplus retain their unchanged-source comparison. Reference files were not
+modified. At this stage dashboards and PDFs used nominal CAD without a
+dollar-basis selector.
 
-Added the Current savings card and separate client/advisor PDF exports. All 25
-calculation and HTTP tests passed using `.venv/Scripts/python.exe -m unittest
-discover -v`. The HTTP tests cover both PDF routes and rejection of invalid
-export inputs. ReportLab 4.5.1 is installed in the project environment.
+## October 13, 2026: simplified advisor export
 
-The example client PDF has 3 pages; the advisor PDF has 10. PDF pages were
-rendered with Poppler and visually inspected. Additional checks cover edited
-balances, high-precision contribution rates, a 30-year single-person projection
-and asset depletion. Parsed PDF text confirms complete inputs, the final
-projection year, page totals, and correctly labelled nominal/today's-dollar
-sections. The detailed PDF checklist is retained in the local historical archive. This update does not
-change the financial calculation engine. Export timestamp labels use UTC.
+The advisor report included all inputs, five summary metrics, both graphs and
+the compact dashboard annual table, without separate reconciliation tables.
+The example decreased from ten pages to five. At that time its annual table
+followed the dashboard's nominal/today's-dollar selection; that selector is no
+longer part of the current interface.
 
-## Original calculation comparison
+All 25 tests passed. The record reports visual inspection of all five example
+pages and separate checks of today's-dollar values and the final year of a
+long individual plan.
 
-Verified locally with Python 3.14.8 and Node.js 24.21.0 against FRESH commit
-`a0623571bd85c0c75c284efe4ba4dee550db8d9b`.
+## October 13, 2026: dashboard and separate PDF exports
 
-Commands:
+The dashboard added Current savings and separate client/advisor PDF exports.
+All 25 calculation and HTTP tests passed, including both PDF routes and invalid
+export-input rejection. ReportLab 4.5.1 was recorded in the test environment.
 
-```text
-python -m unittest discover -v
-python tests/verify_original.py
-python main.py
-```
+The example client PDF had three pages and the advisor PDF ten pages. The record
+reports Poppler rendering and visual inspection, plus checks of edited balances,
+high-precision contribution rates, a 30-year individual projection and depletion.
+Parsed-text checks covered complete inputs, the final year, page totals and
+nominal/today's-dollar labels. This update did not change the calculation engine;
+export timestamps used UTC. These page counts describe that earlier layout.
 
-18 Python test methods passed, including parameterized invalid-input checks.
-23 source comparison cases passed: 18 against the original engine unchanged,
-5 against a separate copy with only the authorized indexation expression changed.
-Detailed counts, row counts and maximum numerical differences appear in
-`verification_results.json`.
+## Original Python/reference comparison
 
-Coverage includes zero/positive/negative indexation, contribution growth unequal
-to inflation, 0 returns, negative returns, depletion, ordered withdrawals,
-proportional spouse withdrawals, separate retirement dates and returns, survivor
-transfers, CPP early/late start, OAS deferral, exact days, leap birthdays, benefits
-beginning before retirement, a projection beginning after the reference year,
-first shortage followed by later fully funded years, zero-asset funded scenarios,
-invalid inputs and per-account annual balance reconciliation.
+The original comparison was recorded with Python 3.14.8 and Node.js 24.21.0
+against reference commit `a0623571bd85c0c75c284efe4ba4dee550db8d9b`.
 
-For unchanged-model cases all original output fields were compared, including
-annual contribution, income, draw, shortage, balances, ages and summary metrics.
-16 scenarios matched exactly. The 51-year and 54-year original default scenarios
-differed by at most 2.3283064365386963e-10 and 9.313225746154785e-10 CAD respectively.
-For the numeric-rate extension the largest absolute difference was
-5.820766091346741e-11 CAD in the fictional spouse scenario. This comes from
-floating-point exponentiation/roundoff between runtimes; calculation timing and
-financial assumptions were preserved. Display differences (whole dollars in
-the website versus cents in HTML and full precision in data exports) are
-presentation choices only.
+Eighteen Python test methods passed, including parameterized invalid-input
+checks. Twenty-three source cases passed: eighteen against the unchanged engine
+and five against a separately loaded numeric contribution-indexation extension.
+These historical results predate the surplus-saving extension described above.
 
-The example ran successfully and wrote all three reports. Its 2026 opening
-balance is CAD 495,000; closing balance is 499,080.0456621004. Its 2033 final
-balance is 512,320.55416591745 nominal / 446,005.87314226036 in 2026 dollars.
+Coverage included positive, zero and negative contribution indexation;
+indexation unequal to inflation; zero and negative returns; depletion; ordered
+and proportional withdrawals; separate retirement dates and returns; survivor
+transfers; CPP early/late starts; OAS deferral; exact-day and leap-birthday timing;
+benefits before retirement; starting after the reference year; funding restored
+after a shortage; zero-asset funded scenarios; invalid inputs; and per-account
+annual reconciliation.
 
-These tests establish parity for the covered scenarios and arithmetic
-reconciliation. They do not validate the economic assumptions or government
-reference values against current regulations, and they are not exhaustive over
-all possible inputs. No workbook was available in the recovered repository.
-The original browser UI/PDF tests were inspected but not rerun, since this port
-does not change or rebuild that UI.
-# Interactive planner verification — October 8, 2026
+All original annual fields and summary metrics were compared in unchanged-model
+cases. Sixteen scenarios matched exactly. The 51-year and 54-year defaults
+differed by at most 2.3283064365386963e-10 and 9.313225746154785e-10 CAD. The
+largest numeric-indexation extension difference was 5.820766091346741e-11 CAD.
+These differences were attributed to cross-runtime floating-point roundoff,
+not changes to cash-flow timing.
 
-The local planner added in `app.py` uses the existing Python calculation engine.
-All 23 tests passed (`python -m unittest discover -v`): the original 18 calculation
-tests and five HTTP interface tests. The new tests cover editable input markup,
-changed financial inputs matching direct Python results, current CSV/JSON data,
-invalid inputs without stale results, spouse exclusion, zero contribution
-indexation, and rejection of requests from an unrelated website. JavaScript
-syntax checks also passed. These are automated code/API checks, not a completed
-visual browser review.
+The fictional example opened 2026 with CAD 495,000 and closed with
+499,080.0456621004. Its 2033 closing balance was 512,320.55416591745 nominal,
+or 446,005.87314226036 in 2026 dollars. The command-line example generated
+CSV, JSON and HTML reports. The original reference UI/PDF tests were inspected
+but not rerun during this calculation-port check.
 
-The earlier numerical source-comparison results below remain a record of the
-calculation engine verification; this interface change adds no financial formulas.
+## October 8, 2026: interactive Python planner
+
+The local planner in `app.py` reused the Python calculation engine. All 23 tests
+passed: eighteen calculation tests and five HTTP interface tests. Coverage
+included editable inputs, changed inputs matching direct engine results,
+current CSV/JSON data, invalid inputs without stale results, spouse exclusion,
+zero contribution indexation and rejection of unrelated-site requests.
+JavaScript syntax checks also passed.
+
+These were automated calculation and HTTP checks, not a completed visual browser
+review. No financial formulas were added by this interface change.
+
+## Limits of the historical evidence
+
+The checks establish arithmetic agreement and reconciliation for the scenarios
+covered. They do not validate economic assumptions or government reference
+values against regulations, and they do not exhaust every possible input.
+
+[Back to the README](../README.md).
